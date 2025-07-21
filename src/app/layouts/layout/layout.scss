@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: var(--color-sasodark);
+  color: white;
+  margin-top: 60px; // height of header
+  margin-bottom: 40px; // height of footer
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); // semi-transparent black
+  z-index: 1100; // between header (1001) and sidebar (1200)
+}
