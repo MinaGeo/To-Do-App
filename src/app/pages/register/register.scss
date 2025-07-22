@@ -1,0 +1,45 @@
+.register-form {
+  max-width: 500px;
+  margin: auto;
+  padding: 2rem;
+  background-color: var(--color-white);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.form-control {
+  border-radius: 0.375rem;
+  border: 1px solid #ccc;
+
+  &:focus {
+    border-color: var(--color-sasopink);
+    box-shadow: 0 0 0 0.1rem rgba(236, 72, 153, 0.25); // soft pink focus
+  }
+
+  &.is-invalid {
+    border-color: var(--color-sasopink);
+  }
+}
+
+.custom-btn {
+  background-color: var(--color-sasopink);
+  color: var(--color-white);
+  border: none;
+  border-radius: 0.375rem;
+
+  &:hover {
+    background-color: var(--color-sasopinkdark);
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.error-msg {
+  color: var(--color-sasopink);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+}
