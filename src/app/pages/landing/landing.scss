@@ -1,24 +1,18 @@
 .landing-title {
-  font-size: 2.5rem;
   color: var(--color-sasopink);
 }
 
 .landing-subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
   color: var(--color-sasogold);
 }
 
 .custom-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
   background-color: var(--color-sasopink);
-  color: white;
+  color: var(--color-white);
   border: none;
   border-radius: 0.5rem;
-  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: var(--color-accent);
+    background-color: var(--color-sasopinkdark);
   }
 }

@@ -4,16 +4,6 @@
   overflow: hidden;
 }
 
-.layout-wrapper {
-  display: flex;
-  padding-top: 60px;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.layout-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
+main {
   background-color: var(--color-sasodark);
 }
