@@ -1,0 +1,10 @@
+header {
+  height: 3.25rem;
+  background: linear-gradient(
+    to right,
+    var(--color-sasopink),
+    var(--color-sasodark) 75%
+  );
+  color: var(--color-white);
+  z-index: 1001;
+}

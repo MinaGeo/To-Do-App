@@ -1,0 +1,16 @@
+.landing-title {
+  color: var(--color-sasopink);
+}
+
+.landing-subtitle {
+  color: var(--color-sasogold);
+}
+
+.custom-btn {
+  background-color: var(--color-sasopink);
+  color: var(--color-white);
+
+  &:hover {
+    background-color: var(--color-sasopinkdark);
+  }
+}
