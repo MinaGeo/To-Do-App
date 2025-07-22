@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { Layout } from './layouts/layout/layout';
-import { redirectIfAuthGuard } from './core/guards/auth.guard';
+import { redirectAuthenticatedGuard } from './core/guards/auth.guard';
 import { Landing } from './pages/landing/landing';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Login } from './pages/login/login';
@@ -13,7 +13,7 @@ export const routes: Routes = [
       {
         path: '',
         component: Landing,
-        canActivate: [redirectIfAuthGuard],
+        canActivate: [redirectAuthenticatedGuard],
       },
       {
         path: 'login',

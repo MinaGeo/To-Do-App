@@ -1,4 +1,4 @@
-.app-header {
+header {
   position: fixed;
   top: 0;
   left: 0;
@@ -9,19 +9,6 @@
     var(--color-sasopink),
     var(--color-sasodark) 75%
   );
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
+  color: var(--color-white);
   z-index: 1001;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.menu-btn {
-  background: none;
-  color: white;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin-right: 1rem;
 }
