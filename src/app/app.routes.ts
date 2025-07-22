@@ -10,7 +10,10 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: Landing,
+        loadComponent: () =>
+          import('./pages/landing/landing').then(
+            (m: { Landing: typeof Landing }) => m.Landing,
+          ),
         canActivate: [AuthGuard],
       },
     ],
