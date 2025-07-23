@@ -1,0 +1,66 @@
+<div class="mt-5 d-flex flex-column align-items-center">
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+    class="register-form p-4 border rounded shadow-sm bg-white"
+  >
+    <div class="mb-3">
+      <input
+        formControlName="username"
+        type="text"
+        placeholder="Username"
+        class="form-control"
+        [class.is-invalid]="
+          form.get('username')?.invalid && form.get('username')?.touched
+        "
+      />
+    </div>
+
+    <div class="mb-3">
+      <input
+        formControlName="password"
+        type="password"
+        placeholder="Password"
+        class="form-control"
+        [class.is-invalid]="
+          form.get('password')?.invalid && form.get('password')?.touched
+        "
+      />
+    </div>
+
+    <div class="mb-3">
+      <input
+        formControlName="confirmPassword"
+        type="password"
+        placeholder="Confirm Password"
+        class="form-control"
+        [class.is-invalid]="
+          form.get('confirmPassword')?.invalid &&
+          form.get('confirmPassword')?.touched
+        "
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-success w-100"
+      [disabled]="form.invalid"
+    >
+      Register
+    </button>
+
+    @if (error()) {
+      <div class="text-danger mt-3 text-center">
+        {{ error() }}
+      </div>
+    }
+
+    <button
+      type="button"
+      class="btn btn-outline-secondary w-100 mt-3"
+      routerLink="/login"
+    >
+      Already have an account? Login here
+    </button>
+  </form>
+</div>
