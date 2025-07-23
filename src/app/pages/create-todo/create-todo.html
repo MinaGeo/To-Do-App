@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="card p-4">
+  <label class="form-label">Title</label>
+  <input formControlName="name" class="form-control" />
+
+  @if (form.get("name")?.invalid && form.get("name")?.touched) {
+    <div class="text-danger">Required</div>
+  }
+
+  <label class="form-label mt-3">Description</label>
+  <textarea formControlName="description" class="form-control"></textarea>
+
+  <label class="form-label mt-3">Due Date</label>
+  <input type="date" formControlName="dueDate" class="form-control" />
+
+  <button class="btn btn-primary mt-4" type="submit" [disabled]="form.invalid">
+    Add Todo
+  </button>
+</form>

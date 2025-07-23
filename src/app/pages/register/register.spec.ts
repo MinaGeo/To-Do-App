@@ -30,6 +30,7 @@ describe('Register', () => {
       'getError',
       'isLoading',
       'isAuthenticated',
+      'setError',
     ]);
     mockAuthFacade.getError.and.returnValue(errorSignal);
     mockAuthFacade.isLoading.and.returnValue(loadingSignal);

@@ -1,0 +1,25 @@
+.dashboard {
+  h2,
+  h4 {
+    color: var(--color-sasopink);
+  }
+
+  .card {
+    background-color: var(--color-sasodark);
+    border-radius: 1rem;
+  }
+
+  .btn-sasopink {
+    background-color: var(--color-sasopink);
+    color: white;
+    border: none;
+
+    &:hover {
+      background-color: #ff88aa; // lighter pink if needed
+    }
+  }
+
+  .list-group-item {
+    border-color: var(--color-secondary);
+  }
+}
