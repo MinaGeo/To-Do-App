@@ -1,13 +1,19 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  effect,
+  Signal,
+} from '@angular/core';
 import {
   FormBuilder,
   Validators,
-  ReactiveFormsModule,
   FormGroup,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthFacade } from '../../service/auth.service';
-import { LoginRequest } from '../../core/api/auth/auth.model';
+import { LoginModel } from './models/login.model';
 
 @Component({
   selector: 'app-login',
@@ -27,24 +33,21 @@ export class Login {
     password: ['', Validators.required],
   });
 
-  errorMsg: string = '';
+  error: Signal<string | null> = this.auth.getError();
+  loading: Signal<boolean> = this.auth.isLoading();
+
+  constructor() {
+    effect(() => {
+      if (this.auth.isAuthenticated()()) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) return;
 
-    const { username, password }: { username: string; password: string } =
-      this.form.value;
-
-    const loginRequest: LoginRequest = {
-      username: username ?? '',
-      password: password ?? '',
-    };
-
-    this.auth.login(loginRequest).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: () => {
-        this.errorMsg = 'Invalid username or password';
-      },
-    });
+    const { username, password }: LoginModel = this.form.value;
+    this.auth.login({ username: username ?? '', password: password ?? '' });
   }
 }

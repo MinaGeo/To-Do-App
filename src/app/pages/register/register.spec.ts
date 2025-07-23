@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
+import {
+  provideZonelessChangeDetection,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { Register } from './register';
 import { AuthFacade } from '../../service/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthenticationResponse } from '../../core/api/auth/auth.model';
 
@@ -13,10 +16,25 @@ describe('Register', () => {
   let mockAuthFacade: jasmine.SpyObj<AuthFacade>;
   let mockRouter: jasmine.SpyObj<Router>;
 
+  let errorSignal: WritableSignal<string | null>;
+  let loadingSignal: WritableSignal<boolean>;
+  let isAuthenticatedSignal: WritableSignal<boolean>;
+
   beforeEach(async () => {
+    errorSignal = signal<string | null>(null);
+    loadingSignal = signal(false);
+    isAuthenticatedSignal = signal(false);
+
     mockAuthFacade = jasmine.createSpyObj<AuthFacade>('AuthFacade', [
       'register',
+      'getError',
+      'isLoading',
+      'isAuthenticated',
     ]);
+    mockAuthFacade.getError.and.returnValue(errorSignal);
+    mockAuthFacade.isLoading.and.returnValue(loadingSignal);
+    mockAuthFacade.isAuthenticated.and.returnValue(isAuthenticatedSignal);
+
     mockRouter = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -25,7 +43,7 @@ describe('Register', () => {
         provideZonelessChangeDetection(),
         { provide: AuthFacade, useValue: mockAuthFacade },
         { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: {} }, // ✅ Fix for NullInjectorError
+        { provide: ActivatedRoute, useValue: {} },
       ],
     }).compileComponents();
 
@@ -46,8 +64,6 @@ describe('Register', () => {
     });
 
     component.onSubmit();
-
-    expect(component.errorMsg).toBe('Passwords do not match');
     expect(mockAuthFacade.register).not.toHaveBeenCalled();
   });
 
@@ -66,7 +82,9 @@ describe('Register', () => {
       },
     };
 
-    mockAuthFacade.register.and.returnValue(of(response));
+    mockAuthFacade.register.and.callFake(() => {
+      errorSignal.set('');
+    });
 
     component.onSubmit();
 
@@ -74,8 +92,7 @@ describe('Register', () => {
       username: 'testuser',
       password: 'Password123',
     });
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
-    expect(component.errorMsg).toBe('');
+    expect(component.error()).toBe('');
   });
 
   it('should set error message on server error', () => {
@@ -90,11 +107,13 @@ describe('Register', () => {
       confirmPassword: 'Password123',
     });
 
-    mockAuthFacade.register.and.returnValue(throwError(() => errorResponse));
+    mockAuthFacade.register.and.callFake(() => {
+      errorSignal.set('Username already exists');
+    });
 
     component.onSubmit();
 
-    expect(component.errorMsg).toBe('Username already exists');
+    expect(component.error()).toBe('Username already exists');
   });
 
   it('should set generic error message on unknown error', () => {
@@ -106,10 +125,12 @@ describe('Register', () => {
       confirmPassword: 'Password123',
     });
 
-    mockAuthFacade.register.and.returnValue(throwError(() => unknownError));
+    mockAuthFacade.register.and.callFake(() => {
+      errorSignal.set('Registration failed. Try again.');
+    });
 
     component.onSubmit();
 
-    expect(component.errorMsg).toBe('Registration failed. Try again.');
+    expect(component.error()).toBe('Registration failed. Try again.');
   });
 });

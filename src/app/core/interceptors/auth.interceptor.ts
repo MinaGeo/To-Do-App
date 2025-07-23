@@ -4,7 +4,7 @@ import {
   HttpHandlerFn,
 } from '@angular/common/http';
 
-export const jwtInterceptor: HttpInterceptorFn = (
+export const AuthInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ) => {

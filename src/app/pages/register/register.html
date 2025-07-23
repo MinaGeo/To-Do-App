@@ -2,8 +2,7 @@
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"
-    class="regitser-form p-4 border rounded shadow-sm bg-white"
-    style="max-width: 400px; width: 100%"
+    class="register-form p-4 border rounded shadow-sm bg-white"
   >
     <div class="mb-3">
       <input
@@ -50,19 +49,18 @@
       Register
     </button>
 
-    @if (errorMsg) {
+    @if (error()) {
       <div class="text-danger mt-3 text-center">
-        {{ errorMsg }}
+        {{ error() }}
       </div>
     }
 
     <button
       type="button"
       class="btn btn-outline-secondary w-100 mt-3"
-      style="max-width: 400px"
       routerLink="/login"
     >
-      Already registered? Click here
+      Already have an account? Login here
     </button>
   </form>
 </div>

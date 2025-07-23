@@ -2,8 +2,7 @@
   <form
     [formGroup]="form"
     (ngSubmit)="onSubmit()"
-    class="p-4 border rounded shadow-sm bg-white"
-    style="max-width: 400px; width: 100%"
+    class="login-form p-4 border rounded shadow-sm bg-white"
   >
     <div class="mb-3">
       <input
@@ -36,10 +35,9 @@
     >
       Login
     </button>
-
-    @if (errorMsg) {
+    @if (error()) {
       <div class="text-danger mt-3 text-center">
-        {{ errorMsg }}
+        {{ error() }}
       </div>
     }
 

@@ -1,15 +1,20 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  effect,
+  Signal,
+} from '@angular/core';
 import {
   FormBuilder,
   Validators,
   FormGroup,
-  FormControl,
   ReactiveFormsModule,
+  FormControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthFacade } from '../../service/auth.service';
-import { RegisterRequest } from '../../core/api/auth/auth.model';
-import { HttpErrorResponse } from '@angular/common/http';
+import { RegisterFormValue } from './models/register.model';
 
 @Component({
   selector: 'app-register',
@@ -20,9 +25,9 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './register.scss',
 })
 export class Register {
-  private fb: FormBuilder = inject(FormBuilder);
-  private auth: AuthFacade = inject(AuthFacade);
-  private router: Router = inject(Router);
+  private readonly fb: FormBuilder = inject(FormBuilder);
+  private readonly auth: AuthFacade = inject(AuthFacade);
+  private readonly router: Router = inject(Router);
 
   form: FormGroup = this.fb.group({
     username: new FormControl<string>('', [
@@ -39,42 +44,39 @@ export class Register {
     confirmPassword: new FormControl<string>('', Validators.required),
   });
 
-  errorMsg: string = '';
+  error: Signal<string | null> = this.auth.getError();
+  loading: Signal<boolean> = this.auth.isLoading();
+
+  constructor() {
+    effect(() => {
+      if (this.auth.isAuthenticated()()) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) return;
 
     const {
-      username,
-      password,
-      confirmPassword,
-    }: { username: string; password: string; confirmPassword: string } =
-      this.form.value;
+      username = '',
+      password = '',
+      confirmPassword = '',
+    }: RegisterFormValue = this.form.value;
 
-    if (password !== confirmPassword) {
-      this.errorMsg = 'Passwords do not match';
+    if (!this.passwordsMatch(password, confirmPassword)) {
+      this.auth.setError('Passwords do not match');
       return;
     }
 
-    const registerRequest: RegisterRequest = {
-      username: username ?? '',
-      password: password ?? '',
-    };
-
-    this.auth.register(registerRequest).subscribe({
-      next: () => {
-        this.router.navigate(['/login']);
-        // Optionally use a logger service here
-      },
-      error: (err: unknown) => {
-        const errorResponse: HttpErrorResponse = err as HttpErrorResponse;
-        this.errorMsg =
-          errorResponse.error?.message || 'Registration failed. Try again.';
-      },
-    });
+    this.auth.register({ username, password });
   }
 
-  get f(): typeof this.form.controls {
-    return this.form.controls;
+  private passwordsMatch(password: string, confirmPassword: string): boolean {
+    return password === confirmPassword;
+  }
+
+  get f(): Record<string, FormControl<string>> {
+    return this.form.controls as Record<string, FormControl<string>>;
   }
 }

@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
+import {
+  provideZonelessChangeDetection,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { Login } from './login';
 import { AuthFacade } from '../../service/auth.service';
 import { provideRouter } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { LoginRequest } from '../../core/api/auth/auth.model';
 
 describe('Login', () => {
@@ -11,8 +14,25 @@ describe('Login', () => {
   let fixture: ComponentFixture<Login>;
   let mockAuthFacade: jasmine.SpyObj<AuthFacade>;
 
+  let errorSignal: WritableSignal<string | null>;
+  let loadingSignal: WritableSignal<boolean>;
+  let isAuthenticatedSignal: WritableSignal<boolean>;
+
   beforeEach(async () => {
-    mockAuthFacade = jasmine.createSpyObj<AuthFacade>('AuthFacade', ['login']);
+    errorSignal = signal<string | null>(null);
+    loadingSignal = signal(false);
+    isAuthenticatedSignal = signal(false);
+
+    mockAuthFacade = jasmine.createSpyObj<AuthFacade>('AuthFacade', [
+      'login',
+      'getError',
+      'isLoading',
+      'isAuthenticated',
+    ]);
+
+    mockAuthFacade.getError.and.returnValue(errorSignal);
+    mockAuthFacade.isLoading.and.returnValue(loadingSignal);
+    mockAuthFacade.isAuthenticated.and.returnValue(isAuthenticatedSignal);
 
     await TestBed.configureTestingModule({
       imports: [Login],
@@ -48,7 +68,9 @@ describe('Login', () => {
       user: { id: '123', username: 'test' },
     };
 
-    mockAuthFacade.login.and.returnValue(of(mockResponse));
+    mockAuthFacade.login.and.callFake(() => {
+      errorSignal.set('');
+    });
 
     component.onSubmit();
 
@@ -58,18 +80,18 @@ describe('Login', () => {
     };
 
     expect(mockAuthFacade.login).toHaveBeenCalledWith(expectedRequest);
-    expect(component.errorMsg).toBe('');
+    expect(component.error()).toBe('');
   });
 
   it('should set error message on login failure', () => {
     component.form.setValue({ username: 'wronguser', password: 'wrongpass' });
 
-    mockAuthFacade.login.and.returnValue(
-      throwError(() => new Error('Invalid login')),
-    );
+    mockAuthFacade.login.and.callFake(() => {
+      errorSignal.set('Invalid username or password');
+    });
 
     component.onSubmit();
 
-    expect(component.errorMsg).toBe('Invalid username or password');
+    expect(component.error()).toBe('Invalid username or password');
   });
 });

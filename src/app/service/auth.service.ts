@@ -1,42 +1,76 @@
-import { inject, Injectable, computed } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { inject, Injectable, computed, Signal } from '@angular/core';
 import { AuthApiService } from '../core/api/auth/auth.service';
 import {
   LoginRequest,
   RegisterRequest,
   AuthenticationResponse,
+  User,
 } from '../core/api/auth/auth.model';
-import { authData } from '../core/state-management/auth.state';
+import {
+  authData,
+  authLoading,
+  authError,
+  setAuthLoading,
+  setAuthError,
+  setAuthData,
+} from '../core/state-management/auth.state';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
   private api: AuthApiService = inject(AuthApiService);
 
-  login(data: LoginRequest): Observable<AuthenticationResponse> {
-    return this.api.login(data).pipe(
-      tap((res: AuthenticationResponse) => {
-        authData.set(res);
+  login(data: LoginRequest): void {
+    setAuthLoading(true);
+    setAuthError(null);
+
+    this.api.login(data).subscribe({
+      next: (res: AuthenticationResponse) => {
+        setAuthData(res);
         localStorage.setItem('token', res.access_token);
-      }),
-    );
+      },
+      error: () => {
+        setAuthError('Invalid username or password');
+      },
+      complete: () => {
+        setAuthLoading(false);
+      },
+    });
   }
 
-  register(data: RegisterRequest): Observable<AuthenticationResponse> {
-    return this.api.register(data).pipe(
-      tap((res: AuthenticationResponse) => {
-        authData.set(res);
+  register(data: RegisterRequest): void {
+    setAuthLoading(true);
+    setAuthError(null);
+
+    this.api.register(data).subscribe({
+      next: (res: AuthenticationResponse) => {
+        setAuthData(res);
         localStorage.setItem('token', res.access_token);
-      }),
-    );
+      },
+      error: () => {
+        setAuthError('Registration failed. Try again.');
+      },
+      complete: () => {
+        setAuthLoading(false);
+      },
+    });
   }
 
-  isAuthenticated(): ReturnType<typeof computed<boolean>> {
+  isAuthenticated(): Signal<boolean> {
     return computed(() => !!authData()?.access_token);
   }
 
-  getCurrentUser(): ReturnType<
-    typeof computed<AuthenticationResponse['user'] | null>
-  > {
+  getCurrentUser(): Signal<User | null> {
     return computed(() => authData()?.user ?? null);
+  }
+
+  getError(): typeof authError {
+    return authError;
+  }
+  setError(message: string): void {
+    setAuthError(message);
+  }
+
+  isLoading(): typeof authLoading {
+    return authLoading;
   }
 }
