@@ -1,5 +1,5 @@
-import { signal, WritableSignal, Signal, computed } from '@angular/core';
-import { AuthenticationResponse, User } from '../api/auth/auth.model';
+import { signal, WritableSignal, Signal } from '@angular/core';
+import { AuthenticationResponse } from '../api/auth/auth.model';
 
 const _authData: WritableSignal<AuthenticationResponse | null> = signal(null);
 const _authLoading: WritableSignal<boolean> = signal(false);
@@ -9,9 +9,7 @@ export const authData: Signal<AuthenticationResponse | null> =
   _authData.asReadonly();
 export const authLoading: Signal<boolean> = _authLoading.asReadonly();
 export const authError: Signal<string | null> = _authError.asReadonly();
-export const user: Signal<User | null> = computed(
-  () => authData()?.user ?? null,
-);
+
 export const setAuthData: (value: AuthenticationResponse | null) => void = (
   value: AuthenticationResponse | null,
 ) => {

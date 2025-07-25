@@ -7,6 +7,12 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { Register } from './pages/register/register';
 import { TodoCreate } from './pages/create-todo/create-todo';
 import { EditTodoPage } from './pages/edit-todo/edit-todo';
+import { RedirectGuard } from './core/guards/redirect.guard';
+import { ProfilePage } from './pages/profile/profile';
+import { LoggedInOnlyGuard } from './core/guards/loggedIn.guard';
+import { AdminPage } from './pages/admin/admin';
+import { roleGuard } from './core/guards/role.guard';
+import { UnauthorizedPage } from './shared/unauthorized';
 
 export const routes: Routes = [
   {
@@ -19,24 +25,39 @@ export const routes: Routes = [
           import('./pages/landing/landing').then(
             (m: { Landing: typeof Landing }) => m.Landing,
           ),
-        canActivate: [AuthGuard],
+        canActivate: [RedirectGuard],
       },
       {
         path: 'login',
-        component: Login,
+        loadComponent: () =>
+          import('./pages/login/login').then(
+            (m: { Login: typeof Login }) => m.Login,
+          ),
+        canActivate: [RedirectGuard],
       },
       {
         path: 'register',
-        component: Register,
+        loadComponent: () =>
+          import('./pages/register/register').then(
+            (m: { Register: typeof Register }) => m.Register,
+          ),
+        canActivate: [RedirectGuard],
       },
       {
         path: 'dashboard',
-        component: Dashboard,
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard').then(
+            (m: { Dashboard: typeof Dashboard }) => m.Dashboard,
+          ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'todos/new',
-        // canActivate: [AuthGuard],
-        component: TodoCreate,
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+          import('./pages/create-todo/create-todo').then(
+            (m: { TodoCreate: typeof TodoCreate }) => m.TodoCreate,
+          ),
       },
       {
         path: 'todos/:id/edit',
@@ -44,7 +65,31 @@ export const routes: Routes = [
           import('./pages/edit-todo/edit-todo').then(
             (m: { EditTodoPage: typeof EditTodoPage }) => m.EditTodoPage,
           ),
-        // canActivate: [AuthGuard],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/profile/profile').then(
+            (m: { ProfilePage: typeof ProfilePage }) => m.ProfilePage,
+          ),
+        canActivate: [LoggedInOnlyGuard],
+      },
+      {
+        path: 'admin',
+        loadComponent: () =>
+          import('./pages/admin/admin').then(
+            (m: { AdminPage: typeof AdminPage }) => m.AdminPage,
+          ),
+        canActivate: [AuthGuard, roleGuard],
+      },
+      {
+        path: 'unauthorized',
+        loadComponent: () =>
+          import('./shared/unauthorized').then(
+            (m: { UnauthorizedPage: typeof UnauthorizedPage }) =>
+              m.UnauthorizedPage,
+          ),
       },
     ],
   },

@@ -1,16 +1,38 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { TodoService } from '../core/api/todo/todo.service';
 import {
   todos,
   setTodos,
   setIsLoading,
   setErrorMessage,
+  addTodoLocally,
+  deleteTodoInState,
+  updateTodoInState,
+  totalTodos,
+  completedTodos,
+  pendingTodos,
+  createOptimisticTodo,
 } from '../core/state-management/todo.state';
 import { Todo } from '../core/api/todo/todo.model';
 
 @Injectable({ providedIn: 'root' })
-export class TodoProvider {
+export class TodoFacade {
   constructor(private readonly todoService: TodoService) {}
+  readonly _todos: Signal<Todo[]> = computed(() => todos());
+
+  getTotalTodos(): number {
+    return totalTodos();
+  }
+  getCompletedTodos(): number {
+    return completedTodos();
+  }
+  getPendingTodos(): number {
+    return pendingTodos();
+  }
+
+  getTodos(): Signal<Todo[]> {
+    return this._todos;
+  }
 
   loadTodos(): void {
     setIsLoading(true);
@@ -27,33 +49,21 @@ export class TodoProvider {
   }
 
   addTodo(name: string, description: string): void {
-    const optimisticTodo: Todo = {
-      id: crypto.randomUUID(),
-      name,
-      description,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    setTodos([...todos(), optimisticTodo]);
+    const optimisticTodo: Todo = createOptimisticTodo(name, description);
+    addTodoLocally(optimisticTodo);
 
     this.todoService.createTodo(name, description).subscribe({
-      next: (realTodo: Todo) => {
-        setTodos(
-          todos().map((t: Todo) => (t.id === optimisticTodo.id ? realTodo : t)),
-        );
-      },
+      next: () => this.loadTodos(),
       error: () => {
         setErrorMessage('Failed to add todo.');
-        setTodos(todos().filter((t: Todo) => t.id !== optimisticTodo.id));
+        deleteTodoInState(optimisticTodo.id);
       },
     });
   }
 
   deleteTodo(id: string): void {
     const backup: Todo[] = todos();
-
-    setTodos(todos().filter((t: Todo) => t.id !== id));
+    deleteTodoInState(id);
 
     this.todoService.deleteTodo(id).subscribe({
       error: () => {
@@ -65,14 +75,7 @@ export class TodoProvider {
 
   updateTodo(id: string, data: Partial<Todo>): void {
     const backup: Todo[] = todos();
-
-    setTodos(
-      todos().map((t: Todo) =>
-        t.id === id
-          ? { ...t, ...data, updatedAt: new Date().toISOString() }
-          : t,
-      ),
-    );
+    updateTodoInState(id, data);
 
     this.todoService.updateTodo(id, data).subscribe({
       error: () => {
@@ -80,5 +83,9 @@ export class TodoProvider {
         setTodos(backup);
       },
     });
+  }
+
+  toggleCompleted(id: string, currentValue: boolean): void {
+    this.updateTodo(id, { completed: !currentValue });
   }
 }

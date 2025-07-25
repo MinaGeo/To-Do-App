@@ -4,17 +4,17 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { TodoCreate } from './create-todo';
-import { TodoProvider } from '../../service/todo.service';
+import { TodoFacade } from '../../service/todo.service';
 
 describe('TodoCreate', () => {
   let component: TodoCreate;
   let fixture: ComponentFixture<TodoCreate>;
-  let mockTodoProvider: jasmine.SpyObj<TodoProvider>;
+  let mockTodoFacade: jasmine.SpyObj<TodoFacade>;
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
     // Create spy objects for dependencies
-    mockTodoProvider = jasmine.createSpyObj('TodoProvider', ['addTodo']);
+    mockTodoFacade = jasmine.createSpyObj('TodoFacade', ['addTodo']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
 
@@ -24,7 +24,7 @@ describe('TodoCreate', () => {
         provideRouter([
           { path: 'dashboard', component: {} as any }, // Mock route for navigation
         ]),
-        { provide: TodoProvider, useValue: mockTodoProvider },
+        { provide: TodoFacade, useValue: mockTodoFacade },
         { provide: Router, useValue: mockRouter },
         provideZonelessChangeDetection(),
       ],
@@ -52,7 +52,7 @@ describe('TodoCreate', () => {
   it('should not submit when form is invalid', () => {
     component.onSubmit();
 
-    expect(mockTodoProvider.addTodo).not.toHaveBeenCalled();
+    expect(mockTodoFacade.addTodo).not.toHaveBeenCalled();
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
@@ -66,7 +66,7 @@ describe('TodoCreate', () => {
     component.form.patchValue(formData);
     component.onSubmit();
 
-    expect(mockTodoProvider.addTodo).toHaveBeenCalledWith(
+    expect(mockTodoFacade.addTodo).toHaveBeenCalledWith(
       formData.name,
       formData.description,
     );

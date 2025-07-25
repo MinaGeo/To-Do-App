@@ -5,7 +5,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TodoProvider } from '../../service/todo.service';
+import { TodoFacade } from '../../service/todo.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class TodoCreate {
   private fb: FormBuilder = inject(FormBuilder);
-  private provider: TodoProvider = inject(TodoProvider);
+  private provider: TodoFacade = inject(TodoFacade);
   private router: Router = inject(Router);
 
   form: FormGroup = this.fb.group({

@@ -15,6 +15,17 @@
         "
       />
     </div>
+    <div class="mb-3">
+      <input
+        formControlName="email"
+        type="email"
+        placeholder="Email"
+        class="form-control"
+        [class.is-invalid]="
+          form.get('email')?.invalid && form.get('email')?.touched
+        "
+      />
+    </div>
 
     <div class="mb-3">
       <input

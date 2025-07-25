@@ -2,23 +2,49 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { EditTodoPage } from './edit-todo';
-import { TodoProvider } from '../../service/todo.service';
+import { TodoFacade } from '../../service/todo.service';
+import { Todo } from '../../core/api/todo/todo.model';
+import { signal } from '@angular/core';
 
 describe('EditTodoPage', () => {
   let component: EditTodoPage;
   let fixture: ComponentFixture<EditTodoPage>;
-  let mockTodoProvider: jasmine.SpyObj<TodoProvider>;
+  let mockTodoFacade: jasmine.SpyObj<TodoFacade>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: any;
+  let mockTodos: Todo[];
 
   beforeEach(async () => {
-    // Create spy objects for dependencies
-    mockTodoProvider = jasmine.createSpyObj('TodoProvider', ['updateTodo']);
+    mockTodos = [
+      {
+        id: '123',
+        name: 'Test Todo',
+        description: 'Test Description',
+        completed: false,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-01T00:00:00Z',
+      },
+      {
+        id: '456',
+        name: 'Another Todo',
+        description: 'Another Description',
+        completed: true,
+        createdAt: '2024-01-02T00:00:00Z',
+        updatedAt: '2024-01-02T00:00:00Z',
+      },
+    ];
+
+    mockTodoFacade = jasmine.createSpyObj('TodoFacade', [
+      'updateTodo',
+      'getTodos',
+    ]);
+    mockTodoFacade.getTodos.and.returnValue(signal(mockTodos));
+
     mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
     mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
 
-    // Mock ActivatedRoute with paramMap
     mockActivatedRoute = {
       snapshot: {
         paramMap: {
@@ -34,7 +60,7 @@ describe('EditTodoPage', () => {
           { path: '', component: {} as any },
           { path: 'dashboard', component: {} as any },
         ]),
-        { provide: TodoProvider, useValue: mockTodoProvider },
+        { provide: TodoFacade, useValue: mockTodoFacade },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideZonelessChangeDetection(),
@@ -49,14 +75,12 @@ describe('EditTodoPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize id from route parameter', () => {
-    // Don't call detectChanges yet to avoid ngOnInit issues
-    expect(mockActivatedRoute.snapshot.paramMap.get).toBeDefined();
-
-    // Manually call ngOnInit to test initialization
+  it('should initialize id from route parameter and populate form', () => {
     component.ngOnInit();
 
     expect(component.id).toBe('123');
+    expect(component.name()).toBe('Test Todo');
+    expect(component.description()).toBe('Test Description');
     expect(mockActivatedRoute.snapshot.paramMap.get).toHaveBeenCalledWith('id');
   });
 
@@ -66,46 +90,36 @@ describe('EditTodoPage', () => {
     component.ngOnInit();
 
     expect(component.id).toBe('');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
-  it('should not submit when name is empty', () => {
-    component.name.set('');
-    component.description.set('Valid description');
+  it('should navigate to home when todo is not found', () => {
+    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('999'); // Non-existent ID
 
-    component.onSubmit();
+    component.ngOnInit();
 
-    expect(mockTodoProvider.updateTodo).not.toHaveBeenCalled();
+    expect(component.id).toBe('999');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
+  });
+
+  it('should not submit when form is invalid', () => {
+    const mockForm = { valid: false } as NgForm;
+
+    component.onSubmit(mockForm);
+
+    expect(mockTodoFacade.updateTodo).not.toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it('should not submit when description is empty', () => {
-    component.name.set('Valid name');
-    component.description.set('');
-
-    component.onSubmit();
-
-    expect(mockTodoProvider.updateTodo).not.toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
-  });
-
-  it('should not submit when both name and description are empty', () => {
-    component.name.set('');
-    component.description.set('');
-
-    component.onSubmit();
-
-    expect(mockTodoProvider.updateTodo).not.toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
-  });
-
-  it('should submit and navigate when form data is valid', () => {
-    component.id = '123';
+  it('should submit and navigate when form is valid', () => {
+    const mockForm = { valid: true } as NgForm;
+    component.id.set('123');
     component.name.set('Updated Todo Name');
     component.description.set('Updated Description');
 
-    component.onSubmit();
+    component.onSubmit(mockForm);
 
-    expect(mockTodoProvider.updateTodo).toHaveBeenCalledWith('123', {
+    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('123', {
       name: 'Updated Todo Name',
       description: 'Updated Description',
     });
@@ -128,76 +142,59 @@ describe('EditTodoPage', () => {
     expect(component.description()).toBe(newDescription);
   });
 
-  it('should handle whitespace-only name as valid (current behavior)', () => {
-    component.id = '123';
-    component.name.set('   ');
-    component.description.set('Valid description');
+  it('should compute todo correctly based on id', () => {
+    component.id.set('123');
 
-    component.onSubmit();
+    const todo = component.todo();
 
-    // Current implementation treats whitespace as truthy, so it passes validation
-    expect(mockTodoProvider.updateTodo).toHaveBeenCalledWith('123', {
-      name: '   ',
-      description: 'Valid description',
-    });
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
+    expect(todo).toEqual(mockTodos[0]);
   });
 
-  it('should handle whitespace-only description as valid (current behavior)', () => {
-    component.id = '123';
-    component.name.set('Valid name');
-    component.description.set('   ');
+  it('should return undefined when todo is not found in computed signal', () => {
+    component.id.set('999');
 
-    component.onSubmit();
+    const todo = component.todo();
 
-    // Current implementation treats whitespace as truthy, so it passes validation
-    expect(mockTodoProvider.updateTodo).toHaveBeenCalledWith('123', {
-      name: 'Valid name',
-      description: '   ',
-    });
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
+    expect(todo).toBeUndefined();
   });
 
-  it('should accept valid input with leading/trailing spaces', () => {
-    component.id = '123';
-    component.name.set('  Valid Name  ');
-    component.description.set('  Valid Description  ');
-
-    component.onSubmit();
-
-    expect(mockTodoProvider.updateTodo).toHaveBeenCalledWith('123', {
-      name: '  Valid Name  ',
-      description: '  Valid Description  ',
-    });
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
-  });
-
-  it('should initialize name signal with empty string by default', () => {
+  it('should initialize signals with empty strings by default', () => {
     expect(component.name()).toBe('');
-  });
-
-  it('should initialize description signal with empty string by default', () => {
     expect(component.description()).toBe('');
   });
 
-  it('should not submit when id is empty', () => {
-    component.id = '';
-    component.name.set('Valid name');
-    component.description.set('Valid description');
-
-    component.onSubmit();
-
-    expect(mockTodoProvider.updateTodo).toHaveBeenCalledWith('', {
-      name: 'Valid name',
-      description: 'Valid description',
-    });
-  });
-
-  it('should handle different route parameter values', () => {
-    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('different-id');
+  it('should handle different route parameter values and populate form accordingly', () => {
+    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('456');
 
     component.ngOnInit();
 
-    expect(component.id).toBe('different-id');
+    expect(component.id).toBe('456');
+    expect(component.name()).toBe('Another Todo');
+    expect(component.description()).toBe('Another Description');
+  });
+
+  it('should populate form fields when todo exists', () => {
+    // Setup component with existing todo
+    component.ngOnInit();
+
+    // Verify the form fields are populated from the found todo
+    expect(component.name()).toBe('Test Todo');
+    expect(component.description()).toBe('Test Description');
+  });
+
+  it('should update todo with current signal values when form is valid', () => {
+    const mockForm = { valid: true } as NgForm;
+    component.id.set('123');
+
+    // Set different values than the original
+    component.name.set('Modified Name');
+    component.description.set('Modified Description');
+
+    component.onSubmit(mockForm);
+
+    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('123', {
+      name: 'Modified Name',
+      description: 'Modified Description',
+    });
   });
 });

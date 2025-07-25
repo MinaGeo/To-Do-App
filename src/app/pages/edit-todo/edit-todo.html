@@ -1,7 +1,7 @@
 <section class="container mt-5 text-white">
   <h2>Edit To-Do</h2>
 
-  <form (ngSubmit)="onSubmit()" class="mt-4">
+  <form #todoForm="ngForm" (ngSubmit)="onSubmit(todoForm)" class="mt-4">
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input

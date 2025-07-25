@@ -1,32 +1,7 @@
 <section class="dashboard container py-4">
   <h2 class="mb-4 text-white">👋 Welcome back, {{ username() }}!</h2>
 
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="card bg-dark text-white border-light shadow">
-        <div class="card-body">
-          <h5 class="card-title">📝 Total Todos</h5>
-          <p class="card-text fs-3">{{ totalTodos() }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card bg-dark text-white border-light shadow">
-        <div class="card-body">
-          <h5 class="card-title">✅ Completed</h5>
-          <p class="card-text fs-3">{{ completedTodos() }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card bg-dark text-white border-light shadow">
-        <div class="card-body">
-          <h5 class="card-title">📌 Pending</h5>
-          <p class="card-text fs-3">{{ pendingTodos() }}</p>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-dashboard-stats />
 
   <hr class="my-4 border-light" />
 
@@ -73,7 +48,6 @@
   } @else {
     <div class="text-secondary fst-italic mt-3">No todos yet. 🎉</div>
   }
-
   <div class="mt-4">
     <button class="btn btn-outline-light me-2" [routerLink]="['/todos/new']">
       Add New Todo

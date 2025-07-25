@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Todo } from './todo.model';
-import { Observable } from 'rxjs';
+import { Todo, TodoResponse } from './todo.model';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -9,9 +9,17 @@ export class TodoService {
   private readonly baseUrl: string = `${environment.apiUrl}/tasks`;
 
   constructor(private http: HttpClient) {}
-
   getTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(this.baseUrl);
+    return this.http.get<TodoResponse[]>(this.baseUrl).pipe(
+      map((todos: TodoResponse[]): Todo[] =>
+        todos.map(
+          (todo: TodoResponse): Todo => ({
+            ...todo,
+            id: todo._id,
+          }),
+        ),
+      ),
+    );
   }
 
   createTodo(name: string, description: string): Observable<Todo> {

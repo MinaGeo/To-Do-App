@@ -4,15 +4,14 @@ import {
   inject,
   signal,
   computed,
-  WritableSignal,
   ChangeDetectionStrategy,
   Signal,
+  WritableSignal,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TodoProvider } from '../../service/todo.service';
-import { todos } from '../../core/state-management/todo.state';
+import { TodoFacade } from '../../service/todo.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Todo } from '../../core/api/todo/todo.model';
 
 @Component({
@@ -25,20 +24,21 @@ import { Todo } from '../../core/api/todo/todo.model';
 export class EditTodoPage implements OnInit {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
-  private readonly provider: TodoProvider = inject(TodoProvider);
+  private readonly provider: TodoFacade = inject(TodoFacade);
 
-  id: string = '';
+  id: WritableSignal<string> = signal('');
   name: WritableSignal<string> = signal('');
   description: WritableSignal<string> = signal('');
 
-  todo: Signal<Todo | undefined> = computed(() =>
-    todos().find((t: Todo) => t.id === this.id),
-  );
+  readonly todo: Signal<Todo | undefined> = computed(() => {
+    const todos: Signal<Todo[]> = this.provider.getTodos();
+    return todos().find((t: Todo) => t.id === this.id());
+  });
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id') ?? '';
-
+    this.id.set(this.route.snapshot.paramMap.get('id') ?? '');
     const todo: Todo | undefined = this.todo();
+
     if (!todo) {
       this.router.navigateByUrl('/');
       return;
@@ -48,10 +48,10 @@ export class EditTodoPage implements OnInit {
     this.description.set(todo.description);
   }
 
-  onSubmit(): void {
-    if (!this.name() || !this.description()) return;
+  onSubmit(form: NgForm): void {
+    if (!form.valid) return;
 
-    this.provider.updateTodo(this.id, {
+    this.provider.updateTodo(this.id(), {
       name: this.name(),
       description: this.description(),
     });

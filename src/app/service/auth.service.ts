@@ -63,6 +63,9 @@ export class AuthFacade {
     return computed(() => authData()?.user ?? null);
   }
 
+  getCurretUsername(): Signal<string> {
+    return computed(() => authData()?.user?.username ?? '');
+  }
   getError(): typeof authError {
     return authError;
   }
@@ -72,5 +75,10 @@ export class AuthFacade {
 
   isLoading(): typeof authLoading {
     return authLoading;
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    setAuthData(null);
   }
 }

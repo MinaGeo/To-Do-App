@@ -28,13 +28,13 @@ export class Register {
   private readonly fb: FormBuilder = inject(FormBuilder);
   private readonly auth: AuthFacade = inject(AuthFacade);
   private readonly router: Router = inject(Router);
-
   form: FormGroup = this.fb.group({
     username: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(3),
       Validators.maxLength(30),
     ]),
+    email: new FormControl<string>('', [Validators.required, Validators.email]),
     password: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(6),
@@ -60,16 +60,17 @@ export class Register {
 
     const {
       username = '',
+      email = '',
       password = '',
       confirmPassword = '',
-    }: RegisterFormValue = this.form.value;
+    }: RegisterFormValue & { email: string } = this.form.value;
 
     if (!this.passwordsMatch(password, confirmPassword)) {
       this.auth.setError('Passwords do not match');
       return;
     }
 
-    this.auth.register({ username, password });
+    this.auth.register({ username, password, email });
   }
 
   private passwordsMatch(password: string, confirmPassword: string): boolean {
