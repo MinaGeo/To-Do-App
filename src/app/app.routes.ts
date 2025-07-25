@@ -9,11 +9,10 @@ import { TodoCreate } from './pages/create-todo/create-todo';
 import { EditTodoPage } from './pages/edit-todo/edit-todo';
 import { RedirectGuard } from './core/guards/redirect.guard';
 import { ProfilePage } from './pages/profile/profile';
-import { LoggedInOnlyGuard } from './core/guards/loggedIn.guard';
+import { LoggedInGuard } from './core/guards/loggedIn.guard';
 import { AdminPage } from './pages/admin/admin';
 import { roleGuard } from './core/guards/role.guard';
-import { UnauthorizedPage } from './shared/unauthorized';
-
+import { UnauthorizedPage } from './shared/unauthorized-page/unauthorized-page';
 export const routes: Routes = [
   {
     path: '',
@@ -73,7 +72,7 @@ export const routes: Routes = [
           import('./pages/profile/profile').then(
             (m: { ProfilePage: typeof ProfilePage }) => m.ProfilePage,
           ),
-        canActivate: [LoggedInOnlyGuard],
+        canActivate: [LoggedInGuard],
       },
       {
         path: 'admin',
@@ -86,7 +85,7 @@ export const routes: Routes = [
       {
         path: 'unauthorized',
         loadComponent: () =>
-          import('./shared/unauthorized').then(
+          import('./shared/unauthorized-page/unauthorized-page').then(
             (m: { UnauthorizedPage: typeof UnauthorizedPage }) =>
               m.UnauthorizedPage,
           ),
