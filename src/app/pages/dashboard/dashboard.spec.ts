@@ -94,7 +94,6 @@ describe('Dashboard', () => {
   it('should handle guest username', () => {
     mockAuthFacade.getCurretUsername.and.returnValue(signal('Guest'));
 
-    // Re-create component to get updated signal
     fixture = TestBed.createComponent(Dashboard);
     component = fixture.componentInstance;
 
@@ -168,7 +167,6 @@ describe('Dashboard', () => {
     mockTodoFacade.getCompletedTodos.and.returnValue(0);
     mockTodoFacade.getPendingTodos.and.returnValue(0);
 
-    // Re-create component to get updated signals
     fixture = TestBed.createComponent(Dashboard);
     component = fixture.componentInstance;
 

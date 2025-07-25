@@ -7,8 +7,6 @@ import {
 import { Register } from './register';
 import { AuthFacade } from '../../service/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AuthenticationResponse } from '../../core/api/auth/auth.model';
 
 describe('Register', () => {
   let component: Register;
@@ -58,7 +56,6 @@ describe('Register', () => {
   });
 
   it('should not submit when form is invalid', () => {
-    // Leave form empty to make it invalid
     component.form.setValue({
       username: '',
       email: '',
@@ -107,10 +104,8 @@ describe('Register', () => {
   });
 
   it('should navigate to login when user becomes authenticated', () => {
-    // Simulate user becoming authenticated
     isAuthenticatedSignal.set(true);
 
-    // Trigger change detection to run the effect
     fixture.detectChanges();
 
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
@@ -135,19 +130,15 @@ describe('Register', () => {
   it('should validate username field correctly', () => {
     const usernameControl = component.f['username'];
 
-    // Test required validation
     usernameControl.setValue('');
     expect(usernameControl.hasError('required')).toBe(true);
 
-    // Test minlength validation
     usernameControl.setValue('ab');
     expect(usernameControl.hasError('minlength')).toBe(true);
 
-    // Test maxlength validation
     usernameControl.setValue('a'.repeat(31));
     expect(usernameControl.hasError('maxlength')).toBe(true);
 
-    // Test valid username
     usernameControl.setValue('validuser');
     expect(usernameControl.valid).toBe(true);
   });
@@ -155,15 +146,12 @@ describe('Register', () => {
   it('should validate email field correctly', () => {
     const emailControl = component.f['email'];
 
-    // Test required validation
     emailControl.setValue('');
     expect(emailControl.hasError('required')).toBe(true);
 
-    // Test email validation
     emailControl.setValue('invalid-email');
     expect(emailControl.hasError('email')).toBe(true);
 
-    // Test valid email
     emailControl.setValue('valid@example.com');
     expect(emailControl.valid).toBe(true);
   });
@@ -171,26 +159,21 @@ describe('Register', () => {
   it('should validate password field correctly', () => {
     const passwordControl = component.f['password'];
 
-    // Test required validation
     passwordControl.setValue('');
     expect(passwordControl.hasError('required')).toBe(true);
 
-    // Test minlength validation
     passwordControl.setValue('12345');
     expect(passwordControl.hasError('minlength')).toBe(true);
 
-    // Test maxlength validation
     passwordControl.setValue('a'.repeat(51));
     expect(passwordControl.hasError('maxlength')).toBe(true);
 
-    // Test pattern validation (must contain letters and numbers)
     passwordControl.setValue('onlyletters');
     expect(passwordControl.hasError('pattern')).toBe(true);
 
     passwordControl.setValue('123456');
     expect(passwordControl.hasError('pattern')).toBe(true);
 
-    // Test valid password
     passwordControl.setValue('Password123');
     expect(passwordControl.valid).toBe(true);
   });
@@ -198,17 +181,14 @@ describe('Register', () => {
   it('should validate confirmPassword field correctly', () => {
     const confirmPasswordControl = component.f['confirmPassword'];
 
-    // Test required validation
     confirmPasswordControl.setValue('');
     expect(confirmPasswordControl.hasError('required')).toBe(true);
 
-    // Test valid confirm password
     confirmPasswordControl.setValue('Password123');
     expect(confirmPasswordControl.valid).toBe(true);
   });
 
   it('should handle empty form values gracefully', () => {
-    // Set form with undefined/null values to test destructuring defaults
     component.form.patchValue({
       username: null,
       email: null,
@@ -218,12 +198,10 @@ describe('Register', () => {
 
     component.onSubmit();
 
-    // Should not crash due to default values in destructuring
     expect(mockAuthFacade.register).not.toHaveBeenCalled();
   });
 
   it('should call passwordsMatch method correctly', () => {
-    // Access private method for testing (cast to any to bypass private access)
     const result1 = (component as any).passwordsMatch(
       'password123',
       'password123',
@@ -247,7 +225,6 @@ describe('Register', () => {
   });
 
   it('should not navigate if user is not authenticated', () => {
-    // Ensure user is not authenticated
     isAuthenticatedSignal.set(false);
     fixture.detectChanges();
 

@@ -13,6 +13,7 @@ import { TodoFacade } from '../../service/todo.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Todo } from '../../core/api/todo/todo.model';
+import { ToastService } from '../../service/toast.service';
 
 @Component({
   selector: 'app-edit-todo',
@@ -25,6 +26,7 @@ export class EditTodoPage implements OnInit {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
   private readonly provider: TodoFacade = inject(TodoFacade);
+  private readonly toast: ToastService = inject(ToastService);
 
   id: WritableSignal<string> = signal('');
   name: WritableSignal<string> = signal('');
@@ -49,7 +51,10 @@ export class EditTodoPage implements OnInit {
   }
 
   onSubmit(form: NgForm): void {
-    if (!form.valid) return;
+    if (!form.valid) {
+      this.toast.show('Please fill out all fields correctly.', 'error');
+      return;
+    }
 
     this.provider.updateTodo(this.id(), {
       name: this.name(),

@@ -4,18 +4,73 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { TodoFacade } from '../../../../service/todo.service';
+import { signal } from '@angular/core';
+import { Todo } from '../../../../core/api/todo/todo.model';
 
 describe('DashboardStats', () => {
   let component: DashboardStats;
   let fixture: ComponentFixture<DashboardStats>;
   let mockTodoFacade: jasmine.SpyObj<TodoFacade>;
+  let todosSignal: any;
 
   beforeEach(async () => {
+    // Create initial todos data
+    const initialTodos: Todo[] = [
+      {
+        id: '1',
+        name: 'Test 1',
+        description: 'Description 1',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        completed: true,
+      },
+      {
+        id: '2',
+        name: 'Test 2',
+        description: 'Description 2',
+        createdAt: '2023-01-02',
+        updatedAt: '2023-01-02',
+        completed: true,
+      },
+      {
+        id: '3',
+        name: 'Test 3',
+        description: 'Description 3',
+        createdAt: '2023-01-03',
+        updatedAt: '2023-01-03',
+        completed: false,
+      },
+      {
+        id: '4',
+        name: 'Test 4',
+        description: 'Description 4',
+        createdAt: '2023-01-04',
+        updatedAt: '2023-01-04',
+        completed: false,
+      },
+      {
+        id: '5',
+        name: 'Test 5',
+        description: 'Description 5',
+        createdAt: '2023-01-05',
+        updatedAt: '2023-01-05',
+        completed: false,
+      },
+    ];
+
+    todosSignal = signal(initialTodos);
+
     mockTodoFacade = jasmine.createSpyObj('TodoFacade', [
+      'getTodos',
       'getTotalTodos',
       'getCompletedTodos',
       'getPendingTodos',
     ]);
+
+    // Mock getTodos to return the signal
+    mockTodoFacade.getTodos.and.returnValue(todosSignal);
+
+    // Keep the other methods for backward compatibility (if needed elsewhere)
     mockTodoFacade.getTotalTodos.and.returnValue(5);
     mockTodoFacade.getCompletedTodos.and.returnValue(2);
     mockTodoFacade.getPendingTodos.and.returnValue(3);
@@ -39,101 +94,231 @@ describe('DashboardStats', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get total todos from TodoFacade', () => {
-    expect(component.total).toBe(5);
-    expect(mockTodoFacade.getTotalTodos).toHaveBeenCalled();
+  it('should get todos from TodoFacade', () => {
+    expect(mockTodoFacade.getTodos).toHaveBeenCalled();
+    expect(component.todos().length).toBe(5);
   });
 
-  it('should get completed todos from TodoFacade', () => {
-    expect(component.completed).toBe(2);
-    expect(mockTodoFacade.getCompletedTodos).toHaveBeenCalled();
+  it('should calculate total todos correctly', () => {
+    expect(component.total()).toBe(5);
   });
 
-  it('should get pending todos from TodoFacade', () => {
-    expect(component.pending).toBe(3);
-    expect(mockTodoFacade.getPendingTodos).toHaveBeenCalled();
+  it('should calculate completed todos correctly', () => {
+    expect(component.completed()).toBe(2);
+  });
+
+  it('should calculate pending todos correctly', () => {
+    expect(component.pending()).toBe(3);
   });
 
   it('should handle zero values', () => {
-    mockTodoFacade.getTotalTodos.and.returnValue(0);
-    mockTodoFacade.getCompletedTodos.and.returnValue(0);
-    mockTodoFacade.getPendingTodos.and.returnValue(0);
+    // Update the signal with empty array
+    todosSignal.set([]);
+    fixture.detectChanges();
 
-    // Re-create component to get updated values
-    fixture = TestBed.createComponent(DashboardStats);
-    component = fixture.componentInstance;
-
-    expect(component.total).toBe(0);
-    expect(component.completed).toBe(0);
-    expect(component.pending).toBe(0);
+    expect(component.total()).toBe(0);
+    expect(component.completed()).toBe(0);
+    expect(component.pending()).toBe(0);
   });
 
   it('should handle large numbers', () => {
-    mockTodoFacade.getTotalTodos.and.returnValue(1000);
-    mockTodoFacade.getCompletedTodos.and.returnValue(750);
-    mockTodoFacade.getPendingTodos.and.returnValue(250);
+    // Create a large dataset
+    const largeTodos: Todo[] = [];
+    for (let i = 1; i <= 1000; i++) {
+      largeTodos.push({
+        id: i.toString(),
+        name: `Todo ${i}`,
+        description: `Description ${i}`,
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        completed: i <= 750, // First 750 are completed
+      });
+    }
 
-    // Re-create component to get updated values
-    fixture = TestBed.createComponent(DashboardStats);
-    component = fixture.componentInstance;
+    todosSignal.set(largeTodos);
+    fixture.detectChanges();
 
-    expect(component.total).toBe(1000);
-    expect(component.completed).toBe(750);
-    expect(component.pending).toBe(250);
+    expect(component.total()).toBe(1000);
+    expect(component.completed()).toBe(750);
+    expect(component.pending()).toBe(250);
   });
 
   it('should reactively update when TodoFacade values change', () => {
-    // Note: Since the component properties are set at initialization time,
-    // they won't be reactive to changes unless the facade methods return signals
-    // This test shows the current behavior
-    mockTodoFacade.getTotalTodos.and.returnValue(10);
-    mockTodoFacade.getCompletedTodos.and.returnValue(4);
-    mockTodoFacade.getPendingTodos.and.returnValue(6);
+    // Initial state
+    expect(component.total()).toBe(5);
+    expect(component.completed()).toBe(2);
+    expect(component.pending()).toBe(3);
 
-    // Re-create component to get updated values
-    fixture = TestBed.createComponent(DashboardStats);
-    component = fixture.componentInstance;
+    // Update the signal
+    const newTodos: Todo[] = [
+      {
+        id: '1',
+        name: 'Test 1',
+        description: 'Description 1',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        completed: true,
+      },
+      {
+        id: '2',
+        name: 'Test 2',
+        description: 'Description 2',
+        createdAt: '2023-01-02',
+        updatedAt: '2023-01-02',
+        completed: true,
+      },
+      {
+        id: '3',
+        name: 'Test 3',
+        description: 'Description 3',
+        createdAt: '2023-01-03',
+        updatedAt: '2023-01-03',
+        completed: true,
+      },
+      {
+        id: '4',
+        name: 'Test 4',
+        description: 'Description 4',
+        createdAt: '2023-01-04',
+        updatedAt: '2023-01-04',
+        completed: true,
+      },
+      {
+        id: '5',
+        name: 'Test 5',
+        description: 'Description 5',
+        createdAt: '2023-01-05',
+        updatedAt: '2023-01-05',
+        completed: false,
+      },
+      {
+        id: '6',
+        name: 'Test 6',
+        description: 'Description 6',
+        createdAt: '2023-01-06',
+        updatedAt: '2023-01-06',
+        completed: false,
+      },
+      {
+        id: '7',
+        name: 'Test 7',
+        description: 'Description 7',
+        createdAt: '2023-01-07',
+        updatedAt: '2023-01-07',
+        completed: false,
+      },
+    ];
 
-    expect(component.total).toBe(10);
-    expect(component.completed).toBe(4);
-    expect(component.pending).toBe(6);
+    todosSignal.set(newTodos);
+    fixture.detectChanges();
 
-    // Update the mock return values
-    mockTodoFacade.getTotalTodos.and.returnValue(15);
-    mockTodoFacade.getCompletedTodos.and.returnValue(8);
-    mockTodoFacade.getPendingTodos.and.returnValue(7);
-
-    // Values won't change without re-creating component since they're not reactive
-    expect(component.total).toBe(10);
-    expect(component.completed).toBe(4);
-    expect(component.pending).toBe(6);
+    // Values should now be reactive and updated
+    expect(component.total()).toBe(7);
+    expect(component.completed()).toBe(4);
+    expect(component.pending()).toBe(3);
   });
 
   it('should handle all todos completed scenario', () => {
-    mockTodoFacade.getTotalTodos.and.returnValue(5);
-    mockTodoFacade.getCompletedTodos.and.returnValue(5);
-    mockTodoFacade.getPendingTodos.and.returnValue(0);
+    const allCompletedTodos: Todo[] = [
+      {
+        id: '1',
+        name: 'Test 1',
+        description: 'Description 1',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        completed: true,
+      },
+      {
+        id: '2',
+        name: 'Test 2',
+        description: 'Description 2',
+        createdAt: '2023-01-02',
+        updatedAt: '2023-01-02',
+        completed: true,
+      },
+      {
+        id: '3',
+        name: 'Test 3',
+        description: 'Description 3',
+        createdAt: '2023-01-03',
+        updatedAt: '2023-01-03',
+        completed: true,
+      },
+      {
+        id: '4',
+        name: 'Test 4',
+        description: 'Description 4',
+        createdAt: '2023-01-04',
+        updatedAt: '2023-01-04',
+        completed: true,
+      },
+      {
+        id: '5',
+        name: 'Test 5',
+        description: 'Description 5',
+        createdAt: '2023-01-05',
+        updatedAt: '2023-01-05',
+        completed: true,
+      },
+    ];
 
-    // Re-create component to get updated values
-    fixture = TestBed.createComponent(DashboardStats);
-    component = fixture.componentInstance;
+    todosSignal.set(allCompletedTodos);
+    fixture.detectChanges();
 
-    expect(component.total).toBe(5);
-    expect(component.completed).toBe(5);
-    expect(component.pending).toBe(0);
+    expect(component.total()).toBe(5);
+    expect(component.completed()).toBe(5);
+    expect(component.pending()).toBe(0);
   });
 
   it('should handle all todos pending scenario', () => {
-    mockTodoFacade.getTotalTodos.and.returnValue(5);
-    mockTodoFacade.getCompletedTodos.and.returnValue(0);
-    mockTodoFacade.getPendingTodos.and.returnValue(5);
+    const allPendingTodos: Todo[] = [
+      {
+        id: '1',
+        name: 'Test 1',
+        description: 'Description 1',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
+        completed: false,
+      },
+      {
+        id: '2',
+        name: 'Test 2',
+        description: 'Description 2',
+        createdAt: '2023-01-02',
+        updatedAt: '2023-01-02',
+        completed: false,
+      },
+      {
+        id: '3',
+        name: 'Test 3',
+        description: 'Description 3',
+        createdAt: '2023-01-03',
+        updatedAt: '2023-01-03',
+        completed: false,
+      },
+      {
+        id: '4',
+        name: 'Test 4',
+        description: 'Description 4',
+        createdAt: '2023-01-04',
+        updatedAt: '2023-01-04',
+        completed: false,
+      },
+      {
+        id: '5',
+        name: 'Test 5',
+        description: 'Description 5',
+        createdAt: '2023-01-05',
+        updatedAt: '2023-01-05',
+        completed: false,
+      },
+    ];
 
-    // Re-create component to get updated values
-    fixture = TestBed.createComponent(DashboardStats);
-    component = fixture.componentInstance;
+    todosSignal.set(allPendingTodos);
+    fixture.detectChanges();
 
-    expect(component.total).toBe(5);
-    expect(component.completed).toBe(0);
-    expect(component.pending).toBe(5);
+    expect(component.total()).toBe(5);
+    expect(component.completed()).toBe(0);
+    expect(component.pending()).toBe(5);
   });
 });

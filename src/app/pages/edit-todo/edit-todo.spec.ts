@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { EditTodoPage } from './edit-todo';
 import { TodoFacade } from '../../service/todo.service';
+import { ToastService } from '../../service/toast.service';
 import { Todo } from '../../core/api/todo/todo.model';
 import { signal } from '@angular/core';
 
@@ -12,6 +13,7 @@ describe('EditTodoPage', () => {
   let component: EditTodoPage;
   let fixture: ComponentFixture<EditTodoPage>;
   let mockTodoFacade: jasmine.SpyObj<TodoFacade>;
+  let mockToastService: jasmine.SpyObj<ToastService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: any;
   let mockTodos: Todo[];
@@ -42,6 +44,8 @@ describe('EditTodoPage', () => {
     ]);
     mockTodoFacade.getTodos.and.returnValue(signal(mockTodos));
 
+    mockToastService = jasmine.createSpyObj('ToastService', ['show']);
+
     mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
     mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
 
@@ -61,6 +65,7 @@ describe('EditTodoPage', () => {
           { path: 'dashboard', component: {} as any },
         ]),
         { provide: TodoFacade, useValue: mockTodoFacade },
+        { provide: ToastService, useValue: mockToastService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideZonelessChangeDetection(),
@@ -78,7 +83,7 @@ describe('EditTodoPage', () => {
   it('should initialize id from route parameter and populate form', () => {
     component.ngOnInit();
 
-    expect(component.id).toBe('123');
+    expect(component.id()).toBe('123');
     expect(component.name()).toBe('Test Todo');
     expect(component.description()).toBe('Test Description');
     expect(mockActivatedRoute.snapshot.paramMap.get).toHaveBeenCalledWith('id');
@@ -89,16 +94,16 @@ describe('EditTodoPage', () => {
 
     component.ngOnInit();
 
-    expect(component.id).toBe('');
+    expect(component.id()).toBe('');
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
   it('should navigate to home when todo is not found', () => {
-    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('999'); // Non-existent ID
+    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('999');
 
     component.ngOnInit();
 
-    expect(component.id).toBe('999');
+    expect(component.id()).toBe('999');
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
@@ -109,6 +114,10 @@ describe('EditTodoPage', () => {
 
     expect(mockTodoFacade.updateTodo).not.toHaveBeenCalled();
     expect(mockRouter.navigateByUrl).not.toHaveBeenCalled();
+    expect(mockToastService.show).toHaveBeenCalledWith(
+      'Please fill out all fields correctly.',
+      'error',
+    );
   });
 
   it('should submit and navigate when form is valid', () => {
@@ -161,6 +170,7 @@ describe('EditTodoPage', () => {
   it('should initialize signals with empty strings by default', () => {
     expect(component.name()).toBe('');
     expect(component.description()).toBe('');
+    expect(component.id()).toBe('');
   });
 
   it('should handle different route parameter values and populate form accordingly', () => {
@@ -168,16 +178,14 @@ describe('EditTodoPage', () => {
 
     component.ngOnInit();
 
-    expect(component.id).toBe('456');
+    expect(component.id()).toBe('456');
     expect(component.name()).toBe('Another Todo');
     expect(component.description()).toBe('Another Description');
   });
 
   it('should populate form fields when todo exists', () => {
-    // Setup component with existing todo
     component.ngOnInit();
 
-    // Verify the form fields are populated from the found todo
     expect(component.name()).toBe('Test Todo');
     expect(component.description()).toBe('Test Description');
   });
@@ -186,7 +194,6 @@ describe('EditTodoPage', () => {
     const mockForm = { valid: true } as NgForm;
     component.id.set('123');
 
-    // Set different values than the original
     component.name.set('Modified Name');
     component.description.set('Modified Description');
 
@@ -196,5 +203,25 @@ describe('EditTodoPage', () => {
       name: 'Modified Name',
       description: 'Modified Description',
     });
+  });
+
+  it('should handle empty id parameter gracefully', () => {
+    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('');
+
+    component.ngOnInit();
+
+    expect(component.id()).toBe('');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
+  });
+
+  it('should not populate form fields when todo is not found', () => {
+    mockActivatedRoute.snapshot.paramMap.get.and.returnValue('nonexistent');
+
+    component.ngOnInit();
+
+    expect(component.id()).toBe('nonexistent');
+    expect(component.name()).toBe('');
+    expect(component.description()).toBe('');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/');
   });
 });

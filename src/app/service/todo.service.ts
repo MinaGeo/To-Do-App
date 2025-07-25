@@ -1,4 +1,4 @@
-import { computed, Injectable, Signal } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { TodoService } from '../core/api/todo/todo.service';
 import {
   todos,
@@ -14,11 +14,13 @@ import {
   createOptimisticTodo,
 } from '../core/state-management/todo.state';
 import { Todo } from '../core/api/todo/todo.model';
+import { ToastService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class TodoFacade {
   constructor(private readonly todoService: TodoService) {}
   readonly _todos: Signal<Todo[]> = computed(() => todos());
+  private readonly toast: ToastService = inject(ToastService);
 
   getTotalTodos(): number {
     return totalTodos();
@@ -39,9 +41,11 @@ export class TodoFacade {
     this.todoService.getTodos().subscribe({
       next: (data: Todo[]) => {
         setTodos(data);
+        this.toast.show('Todos loaded successfully!', 'success');
         setErrorMessage(null);
       },
       error: () => {
+        this.toast.show('Failed to load todos.', 'error');
         setErrorMessage('Failed to load todos.');
       },
       complete: () => setIsLoading(false),
@@ -53,9 +57,14 @@ export class TodoFacade {
     addTodoLocally(optimisticTodo);
 
     this.todoService.createTodo(name, description).subscribe({
-      next: () => this.loadTodos(),
+      next: () => {
+        this.loadTodos();
+        this.toast.show('Todo added successfully!', 'success');
+        setErrorMessage(null);
+      },
       error: () => {
         setErrorMessage('Failed to add todo.');
+        this.toast.show('Failed to add todo.', 'error');
         deleteTodoInState(optimisticTodo.id);
       },
     });
@@ -66,8 +75,13 @@ export class TodoFacade {
     deleteTodoInState(id);
 
     this.todoService.deleteTodo(id).subscribe({
+      next: () => {
+        this.toast.show('Todo deleted successfully!', 'success');
+        setErrorMessage(null);
+      },
       error: () => {
         setErrorMessage('Failed to delete todo.');
+        this.toast.show('Failed to delete todo.', 'error');
         setTodos(backup);
       },
     });
@@ -78,8 +92,13 @@ export class TodoFacade {
     updateTodoInState(id, data);
 
     this.todoService.updateTodo(id, data).subscribe({
+      next: () => {
+        this.toast.show('Todo updated successfully!', 'success');
+        setErrorMessage(null);
+      },
       error: () => {
         setErrorMessage('Failed to update todo.');
+        this.toast.show('Failed to update todo.', 'error');
         setTodos(backup);
       },
     });

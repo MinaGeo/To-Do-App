@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
@@ -13,17 +12,14 @@ describe('TodoCreate', () => {
   let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(async () => {
-    // Create spy objects for dependencies
     mockTodoFacade = jasmine.createSpyObj('TodoFacade', ['addTodo']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
 
     await TestBed.configureTestingModule({
-      imports: [TodoCreate], // Standalone component
+      imports: [TodoCreate],
       providers: [
-        provideRouter([
-          { path: 'dashboard', component: {} as any }, // Mock route for navigation
-        ]),
+        provideRouter([{ path: 'dashboard', component: {} as any }]),
         { provide: TodoFacade, useValue: mockTodoFacade },
         { provide: Router, useValue: mockRouter },
         provideZonelessChangeDetection(),
@@ -75,7 +71,7 @@ describe('TodoCreate', () => {
 
   it('should validate name field max length', () => {
     const nameControl = component.form.get('name');
-    const longName = 'a'.repeat(51); // 51 characters
+    const longName = 'a'.repeat(51);
 
     nameControl?.setValue(longName);
 
@@ -84,7 +80,7 @@ describe('TodoCreate', () => {
 
   it('should validate description field max length', () => {
     const descriptionControl = component.form.get('description');
-    const longDescription = 'a'.repeat(256); // 256 characters
+    const longDescription = 'a'.repeat(256);
 
     descriptionControl?.setValue(longDescription);
 
