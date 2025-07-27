@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { User } from '../../../../core/api/auth/auth.model';
 import { AdminFacade } from '../../../../service/admin.service';
-import { ToastService } from '../../../../service/toast.service';
+import { ToastrService } from '../../../../service/toast.service';
 @Component({
   selector: 'app-admin-user-table',
   standalone: true,
@@ -19,7 +19,7 @@ import { ToastService } from '../../../../service/toast.service';
 })
 export class AdminUserTable {
   private facade: AdminFacade = inject(AdminFacade);
-  private toast: ToastService = inject(ToastService);
+  private toast: ToastrService = inject(ToastrService);
   readonly users: Signal<User[]> = this.facade.getUsers();
 
   onPromote(user: User): void {

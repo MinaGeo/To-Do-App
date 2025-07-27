@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UnauthorizedPage } from './unauthorized-page';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
 describe('UnauthorizedPage', () => {
   let component: UnauthorizedPage;
   let fixture: ComponentFixture<UnauthorizedPage>;
@@ -8,7 +9,7 @@ describe('UnauthorizedPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UnauthorizedPage],
-      providers: [provideZonelessChangeDetection()],
+      providers: [provideZonelessChangeDetection(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UnauthorizedPage);

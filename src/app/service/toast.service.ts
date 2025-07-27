@@ -1,28 +1,26 @@
-import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
-
-export interface Toast {
-  id: number;
-  message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
-}
+// src/app/core/services/toastr.service.ts
+import { Injectable } from '@angular/core';
+import * as toastr from 'toastr';
 
 @Injectable({ providedIn: 'root' })
-export class ToastService {
-  private counter: number = 0;
-
-  private _toasts: WritableSignal<Toast[]> = signal<Toast[]>([]);
-  readonly toasts: Signal<Toast[]> = this._toasts.asReadonly();
-
-  show(message: string, type: Toast['type'] = 'info'): void {
-    const toast: Toast = { id: this.counter++, message, type };
-    this._toasts.update((toasts: Toast[]) => [...toasts, toast]);
-
-    setTimeout(() => this.remove(toast.id), 4000);
+export class ToastrService {
+  constructor() {
+    toastr.options.positionClass = 'toast-bottom-right';
   }
 
-  remove(id: number): void {
-    this._toasts.update((toasts: Toast[]) =>
-      toasts.filter((t: Toast) => t.id !== id),
-    );
+  success(message: string, title?: string): void {
+    toastr.success(message, title);
+  }
+
+  error(message: string, title?: string): void {
+    toastr.error(message, title);
+  }
+
+  info(message: string, title?: string): void {
+    toastr.info(message, title);
+  }
+
+  warning(message: string, title?: string): void {
+    toastr.warning(message, title);
   }
 }

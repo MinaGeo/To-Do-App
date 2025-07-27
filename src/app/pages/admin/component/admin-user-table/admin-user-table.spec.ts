@@ -4,14 +4,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { AdminUserTable } from './admin-user-table';
 import { AdminFacade } from '../../../../service/admin.service';
-import { ToastService } from '../../../../service/toast.service';
+import { ToastrService } from '../../../../service/toast.service';
 import { User } from '../../../../core/api/auth/auth.model';
 
 describe('AdminUserTable', () => {
   let component: AdminUserTable;
   let fixture: ComponentFixture<AdminUserTable>;
   let mockAdminFacade: jasmine.SpyObj<AdminFacade>;
-  let mockToastService: jasmine.SpyObj<ToastService>;
+  let mockToastrService: jasmine.SpyObj<ToastrService>;
 
   const mockUsers: User[] = [
     {
@@ -51,7 +51,7 @@ describe('AdminUserTable', () => {
         provideZonelessChangeDetection(),
         provideHttpClient(),
         { provide: AdminFacade, useValue: adminFacadeSpy },
-        { provide: ToastService, useValue: toastServiceSpy },
+        { provide: ToastrService, useValue: toastServiceSpy },
       ],
     }).compileComponents();
 
@@ -60,9 +60,9 @@ describe('AdminUserTable', () => {
     mockAdminFacade = TestBed.inject(
       AdminFacade,
     ) as jasmine.SpyObj<AdminFacade>;
-    mockToastService = TestBed.inject(
-      ToastService,
-    ) as jasmine.SpyObj<ToastService>;
+    mockToastrService = TestBed.inject(
+      ToastrService,
+    ) as jasmine.SpyObj<ToastrService>;
     fixture.detectChanges();
   });
 

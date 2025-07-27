@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "prepare": "husky",
-    "start": "ng serve --proxy-config proxy.conf.json",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -30,6 +30,7 @@
     "@angular/router": "^20.1.0",
     "bootstrap": "^5.3.7",
     "rxjs": "~7.8.0",
+    "toastr": "^2.1.4",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@eslint/json": "^0.13.0",
     "@eslint/markdown": "^7.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/toastr": "^2.1.43",
     "angular-eslint": "20.1.1",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",

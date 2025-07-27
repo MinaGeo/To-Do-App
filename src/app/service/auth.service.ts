@@ -14,12 +14,12 @@ import {
   setAuthError,
   setAuthData,
 } from '../core/state-management/auth.state';
-import { ToastService } from './toast.service';
+import { ToastrService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
   private api: AuthApiService = inject(AuthApiService);
-  private readonly toast: ToastService = inject(ToastService);
+  private readonly toast: ToastrService = inject(ToastrService);
 
   login(data: LoginRequest): void {
     setAuthLoading(true);
@@ -29,11 +29,11 @@ export class AuthFacade {
       next: (res: AuthenticationResponse) => {
         setAuthData(res);
         localStorage.setItem('token', res.access_token);
-        this.toast.show('Login successful!', 'success');
+        this.toast.success('Login successful!');
       },
       error: () => {
         setAuthError('Invalid username or password');
-        this.toast.show('Login failed. Please try again.', 'error');
+        this.toast.error('Login failed. Please try again.');
       },
       complete: () => {
         setAuthLoading(false);
@@ -49,11 +49,11 @@ export class AuthFacade {
       next: (res: AuthenticationResponse) => {
         setAuthData(res);
         localStorage.setItem('token', res.access_token);
-        this.toast.show('Registration successful!', 'success');
+        this.toast.success('Registration successful!');
       },
       error: () => {
         setAuthError('Registration failed. Try again.');
-        this.toast.show('Registration failed. Try again.', 'error');
+        this.toast.error('Registration failed. Try again.');
       },
       complete: () => {
         setAuthLoading(false);
@@ -85,7 +85,7 @@ export class AuthFacade {
 
   logout(): void {
     localStorage.removeItem('token');
-    this.toast.show('Logout successful!', 'success');
+    this.toast.success('Logout successful!');
     setAuthData(null);
   }
 }

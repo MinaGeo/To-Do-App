@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { TodoFacade } from '../../service/todo.service';
 import { Router } from '@angular/router';
-import { ToastService } from '../../service/toast.service';
+import { ToastrService } from '../../service/toast.service';
 
 @Component({
   selector: 'app-create-todo',
@@ -20,7 +20,7 @@ export class TodoCreate {
   private fb: FormBuilder = inject(FormBuilder);
   private provider: TodoFacade = inject(TodoFacade);
   private router: Router = inject(Router);
-  private toast: ToastService = inject(ToastService);
+  private toast: ToastrService = inject(ToastrService);
 
   form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -29,7 +29,7 @@ export class TodoCreate {
   });
   onSubmit(): void {
     if (this.form.invalid) {
-      this.toast.show('Please fill out all fields correctly.', 'error');
+      this.toast.error('Please fill out all fields correctly.');
       return;
     }
     const { name, description }: { name: string; description: string } =

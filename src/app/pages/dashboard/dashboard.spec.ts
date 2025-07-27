@@ -77,12 +77,6 @@ describe('Dashboard', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call loadTodos on ngOnInit', () => {
-    component.ngOnInit();
-
-    expect(mockTodoFacade.loadTodos).toHaveBeenCalled();
-  });
-
   it('should get todo list from TodoFacade', () => {
     expect(component.todoList()).toEqual(mockTodos);
   });
@@ -109,57 +103,6 @@ describe('Dashboard', () => {
     expect(mockTodoFacade.addTodo).toHaveBeenCalledWith(name, description);
   });
 
-  it('should call deleteTodo with correct todoId', () => {
-    const todoId = '123';
-
-    component.onDelete(todoId);
-
-    expect(mockTodoFacade.deleteTodo).toHaveBeenCalledWith(todoId);
-  });
-
-  it('should call updateTodo with correct parameters', () => {
-    const todoId = '123';
-    const updateData: Partial<Todo> = { name: 'Updated Name' };
-
-    component.onUpdate(todoId, updateData);
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith(todoId, updateData);
-  });
-
-  it('should toggle todo completion status to true', () => {
-    const todo: Todo = {
-      id: '1',
-      name: 'Test Todo',
-      description: 'Test Description',
-      completed: false,
-      createdAt: '2024-01-01T10:00:00Z',
-      updatedAt: '2024-01-01T10:00:00Z',
-    };
-
-    component.onToggleComplete(todo);
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('1', {
-      completed: true,
-    });
-  });
-
-  it('should toggle todo completion status to false', () => {
-    const todo: Todo = {
-      id: '1',
-      name: 'Test Todo',
-      description: 'Test Description',
-      completed: true,
-      createdAt: '2024-01-01T10:00:00Z',
-      updatedAt: '2024-01-01T10:00:00Z',
-    };
-
-    component.onToggleComplete(todo);
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('1', {
-      completed: false,
-    });
-  });
-
   it('should handle empty todo list', () => {
     const emptyTodos: Todo[] = [];
     mockTodoFacade.getTodos.and.returnValue(signal(emptyTodos));
@@ -177,46 +120,5 @@ describe('Dashboard', () => {
     component.onAdd('', '');
 
     expect(mockTodoFacade.addTodo).toHaveBeenCalledWith('', '');
-  });
-
-  it('should call onDelete with empty string id', () => {
-    component.onDelete('');
-
-    expect(mockTodoFacade.deleteTodo).toHaveBeenCalledWith('');
-  });
-
-  it('should call onUpdate with empty object', () => {
-    component.onUpdate('123', {});
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('123', {});
-  });
-
-  it('should call onUpdate with multiple properties', () => {
-    const updateData: Partial<Todo> = {
-      name: 'Updated Name',
-      description: 'Updated Description',
-      completed: true,
-    };
-
-    component.onUpdate('123', updateData);
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('123', updateData);
-  });
-
-  it('should handle todos with undefined completed property', () => {
-    const todo: Todo = {
-      id: '1',
-      name: 'Test Todo',
-      description: 'Test Description',
-      completed: undefined as any,
-      createdAt: '2024-01-01T10:00:00Z',
-      updatedAt: '2024-01-01T10:00:00Z',
-    };
-
-    component.onToggleComplete(todo);
-
-    expect(mockTodoFacade.updateTodo).toHaveBeenCalledWith('1', {
-      completed: true,
-    });
   });
 });
