@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './landing.html',
-  styleUrls: ['./landing.scss'], // optional
+  styleUrls: ['./landing.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Landing {}

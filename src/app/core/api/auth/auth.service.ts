@@ -4,6 +4,7 @@ import {
   LoginRequest,
   AuthenticationResponse,
   RegisterRequest,
+  User,
 } from './auth.model';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -23,5 +24,9 @@ export class AuthApiService {
       `${environment.apiUrl}/auth/register`,
       data,
     );
+  }
+
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/auth/profile`);
   }
 }

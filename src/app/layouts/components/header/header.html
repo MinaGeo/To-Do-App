@@ -1,5 +1,24 @@
 <header
-  class="d-flex fixed-top justify-content-center align-items-center px-3 text-white shadow-sm"
+  class="d-flex fixed-top justify-content-between align-items-center px-4 py-2 bg-primary text-white shadow-sm"
 >
   <h3 class="mb-0">MyTodo App</h3>
+
+  @if (isLoggedIn(); as loggedIn) {
+    <div class="d-flex align-items-center gap-2">
+      <span>Hi, {{ user()?.username }}</span>
+      <a routerLink="/dashboard" class="btn btn-light btn-sm">Dashboard</a>
+      <a routerLink="/admin" class="btn btn-outline-light btn-sm">Admin</a>
+      <a routerLink="/profile" class="btn btn-outline-light btn-sm">Profile</a>
+      <button (click)="logout()" class="btn btn-light btn-sm text-primary">
+        Logout
+      </button>
+    </div>
+  } @else {
+    <div class="d-flex align-items-center gap-2">
+      <a routerLink="/login" class="btn btn-outline-light btn-sm">Login</a>
+      <a routerLink="/register" class="btn btn-light btn-sm text-primary"
+        >Register</a
+      >
+    </div>
+  }
 </header>

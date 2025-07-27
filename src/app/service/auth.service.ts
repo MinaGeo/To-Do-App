@@ -14,10 +14,12 @@ import {
   setAuthError,
   setAuthData,
 } from '../core/state-management/auth.state';
+import { ToastrService } from './toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
   private api: AuthApiService = inject(AuthApiService);
+  private readonly toast: ToastrService = inject(ToastrService);
 
   login(data: LoginRequest): void {
     setAuthLoading(true);
@@ -27,9 +29,11 @@ export class AuthFacade {
       next: (res: AuthenticationResponse) => {
         setAuthData(res);
         localStorage.setItem('token', res.access_token);
+        this.toast.success('Login successful!');
       },
       error: () => {
         setAuthError('Invalid username or password');
+        this.toast.error('Login failed. Please try again.');
       },
       complete: () => {
         setAuthLoading(false);
@@ -45,9 +49,11 @@ export class AuthFacade {
       next: (res: AuthenticationResponse) => {
         setAuthData(res);
         localStorage.setItem('token', res.access_token);
+        this.toast.success('Registration successful!');
       },
       error: () => {
         setAuthError('Registration failed. Try again.');
+        this.toast.error('Registration failed. Try again.');
       },
       complete: () => {
         setAuthLoading(false);
@@ -63,6 +69,9 @@ export class AuthFacade {
     return computed(() => authData()?.user ?? null);
   }
 
+  getCurretUsername(): Signal<string> {
+    return computed(() => authData()?.user?.username ?? '');
+  }
   getError(): typeof authError {
     return authError;
   }
@@ -72,5 +81,11 @@ export class AuthFacade {
 
   isLoading(): typeof authLoading {
     return authLoading;
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    this.toast.success('Logout successful!');
+    setAuthData(null);
   }
 }
