@@ -10,10 +10,11 @@ import { TodoFacade } from '../../../../service/todo.service';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { DashboardStatCardComponent } from '../dashboard-stat-card-component/dashboard-stat-card-component';
 import {
-  DASHBOARD_STAT_CARDS,
+  StatCardConfig,
   StatCardKey,
   StatCardVM,
 } from './model/dashboard-stats.model';
+import { DASHBOARD_STAT_CARDS } from './config/dashboard-stats.config';
 @Component({
   selector: 'app-dashboard-stats',
   standalone: true,
@@ -40,9 +41,8 @@ export class DashboardStats {
     [StatCardKey.Completed]: this.completed,
     [StatCardKey.Pending]: this.pending,
   };
-
-  readonly statCards: Signal<StatCardVM[]> = computed(() =>
-    DASHBOARD_STAT_CARDS.map(({ title, icon, key }) => ({
+  readonly statCards: Signal<StatCardVM[]> = computed<StatCardVM[]>(() =>
+    DASHBOARD_STAT_CARDS.map(({ title, icon, key }: StatCardConfig) => ({
       title,
       icon,
       value: this.valueMap[key],
