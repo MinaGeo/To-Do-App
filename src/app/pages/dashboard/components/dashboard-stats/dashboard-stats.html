@@ -1,26 +1,11 @@
 <div class="row g-4">
-  <div class="col-md-4">
-    <div class="card bg-dark text-white border-light shadow">
-      <div class="card-body">
-        <h5 class="card-title">📝 Total Todos</h5>
-        <p class="card-text fs-3">{{ total() }}</p>
-      </div>
+  @for (card of statCards(); track card.title) {
+    <div class="col-md-4">
+      <app-dashboard-stat-card-component
+        [title]="card.title"
+        [value]="card.value()"
+        [icon]="card.icon"
+      />
     </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card bg-dark text-white border-light shadow">
-      <div class="card-body">
-        <h5 class="card-title">✅ Completed</h5>
-        <p class="card-text fs-3">{{ completed() }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="card bg-dark text-white border-light shadow">
-      <div class="card-body">
-        <h5 class="card-title">📌 Pending</h5>
-        <p class="card-text fs-3">{{ pending() }}</p>
-      </div>
-    </div>
-  </div>
+  }
 </div>
