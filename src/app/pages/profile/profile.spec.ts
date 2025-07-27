@@ -5,7 +5,7 @@ import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { ProfilePage } from './profile';
 import { AuthFacade } from '../../service/auth.service';
-import { User } from '../../core/api/auth/auth.model';
+import { User, UserRole } from '../../core/api/auth/auth.model';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;
@@ -17,7 +17,7 @@ describe('ProfilePage', () => {
     _id: '1',
     username: 'testuser',
     email: 'test@example.com',
-    role: 'user',
+    role: UserRole.User,
   };
 
   beforeEach(async () => {
@@ -79,7 +79,7 @@ describe('ProfilePage', () => {
       _id: '2',
       username: 'newuser',
       email: 'new@example.com',
-      role: 'admin',
+      role: UserRole.Admin,
     };
 
     const userSignal = signal(newUser);

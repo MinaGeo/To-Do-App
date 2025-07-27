@@ -48,11 +48,10 @@ export class EditTodoForm implements OnInit {
 
     if (!todo) {
       this.router.navigateByUrl('/');
-      return;
+    } else {
+      this.form.name.set(todo.name);
+      this.form.description.set(todo.description);
     }
-
-    this.form.name.set(todo.name);
-    this.form.description.set(todo.description);
   }
 
   onSubmit(form: NgForm): void {

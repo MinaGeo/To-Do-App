@@ -5,7 +5,7 @@ import { signal } from '@angular/core';
 import { AdminUserTable } from './admin-user-table';
 import { AdminFacade } from '../../../../service/admin.service';
 import { ToastrService } from '../../../../service/toast.service';
-import { User } from '../../../../core/api/auth/auth.model';
+import { User, UserRole } from '../../../../core/api/auth/auth.model';
 
 describe('AdminUserTable', () => {
   let component: AdminUserTable;
@@ -19,16 +19,21 @@ describe('AdminUserTable', () => {
       _id: '1',
       username: 'user1',
       email: 'user1@test.com',
-      role: 'user',
+      role: UserRole.User,
     },
     {
       id: '2',
       _id: '2',
       username: 'user2',
       email: 'user2@test.com',
-      role: 'user',
+      role: UserRole.User,
     },
-    { id: '3', username: 'user3', email: 'user3@test.com', role: 'admin' },
+    {
+      id: '3',
+      username: 'user3',
+      email: 'user3@test.com',
+      role: UserRole.Admin,
+    },
   ];
 
   beforeEach(async () => {
@@ -89,7 +94,7 @@ describe('AdminUserTable', () => {
         _id: '123',
         username: 'testuser',
         email: 'test@test.com',
-        role: 'user',
+        role: UserRole.User,
       } as User;
 
       component.onPromote(user);
@@ -104,7 +109,7 @@ describe('AdminUserTable', () => {
       const user = {
         username: 'testuser',
         email: 'test@test.com',
-        role: 'user',
+        role: UserRole.User,
       } as User;
 
       component.onPromote(user);
@@ -127,7 +132,7 @@ describe('AdminUserTable', () => {
         _id: '123',
         username: 'testuser',
         email: 'test@test.com',
-        role: 'admin',
+        role: UserRole.Admin,
       } as User;
 
       component.onDemote(user);
@@ -142,7 +147,7 @@ describe('AdminUserTable', () => {
       const user = {
         username: 'testuser',
         email: 'test@test.com',
-        role: 'user',
+        role: UserRole.User,
       } as User;
 
       component.onDemote(user);
@@ -165,7 +170,7 @@ describe('AdminUserTable', () => {
         _id: '123',
         username: 'testuser',
         email: 'test@test.com',
-        role: 'user',
+        role: UserRole.User,
       } as User;
 
       component.onDelete(user);
@@ -180,7 +185,7 @@ describe('AdminUserTable', () => {
       const user = {
         username: 'testuser',
         email: 'test@test.com',
-        role: 'user',
+        role: UserRole.User,
       } as User;
 
       component.onDelete(user);
@@ -191,7 +196,11 @@ describe('AdminUserTable', () => {
 
   describe('trackByUserId', () => {
     it('should return user id when available', () => {
-      const user = { id: '123', email: 'test@test.com', role: 'user' } as User;
+      const user = {
+        id: '123',
+        email: 'test@test.com',
+        role: UserRole.User,
+      } as User;
 
       const result = component.trackByUserId(0, user);
 
@@ -199,7 +208,7 @@ describe('AdminUserTable', () => {
     });
 
     it('should return user email when id is not available', () => {
-      const user = { email: 'test@test.com', role: 'user' } as User;
+      const user = { email: 'test@test.com', role: UserRole.User } as User;
 
       const result = component.trackByUserId(0, user);
 
@@ -207,7 +216,7 @@ describe('AdminUserTable', () => {
     });
 
     it('should return index as string when neither id nor email are available', () => {
-      const user = { role: 'user' } as User;
+      const user = { role: UserRole.User } as User;
 
       const result = component.trackByUserId(5, user);
 

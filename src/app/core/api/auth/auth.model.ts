@@ -9,12 +9,17 @@ export interface RegisterRequest {
   email: string;
 }
 
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}
+
 export interface User {
   id: string;
   _id?: string;
   username: string;
   email: string;
-  role: 'user' | 'admin';
+  role: UserRole;
   createdAt?: string;
   passwordHash?: string;
 }

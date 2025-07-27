@@ -6,7 +6,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { signal, Signal } from '@angular/core';
 import { Header } from './header';
 import { AuthFacade } from '../../../service/auth.service';
-import { User } from '../../../core/api/auth/auth.model';
+import { User, UserRole } from '../../../core/api/auth/auth.model';
 
 describe('Header', () => {
   let component: Header;
@@ -71,7 +71,7 @@ describe('Header', () => {
         id: '1',
         email: 'john@example.com',
         username: 'johndoe',
-        role: 'admin',
+        role: UserRole.Admin,
       };
       const userSignal = signal(mockUser);
       mockAuthFacade.getCurrentUser.and.returnValue(userSignal);
@@ -109,7 +109,7 @@ describe('Header', () => {
         id: '1',
         email: 'john@example.com',
         username: 'johndoe',
-        role: 'user',
+        role: UserRole.User,
       };
       mockAuthFacade.isAuthenticated.and.returnValue(
         signal(true) as Signal<boolean>,
