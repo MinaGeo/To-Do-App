@@ -4,12 +4,16 @@ import {
   inject,
   Signal,
   ChangeDetectionStrategy,
-  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TodoFacade } from '../../../../service/todo.service';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { DashboardStatCardComponent } from '../dashboard-stat-card-component/dashboard-stat-card-component';
+import {
+  DASHBOARD_STAT_CARDS,
+  StatCardKey,
+  StatCardVM,
+} from './model/dashboard-stats.model';
 @Component({
   selector: 'app-dashboard-stats',
   standalone: true,
@@ -31,11 +35,17 @@ export class DashboardStats {
     () => this.todos().filter((t: Todo) => !t.completed).length,
   );
 
-  readonly statCards: Signal<
-    { title: string; value: Signal<number>; icon: string }[]
-  > = signal([
-    { title: 'Total Todos', value: this.total, icon: '📝' },
-    { title: 'Completed', value: this.completed, icon: '✅' },
-    { title: 'Pending', value: this.pending, icon: '📌' },
-  ]);
+  private readonly valueMap: Record<StatCardKey, Signal<number>> = {
+    [StatCardKey.Total]: this.total,
+    [StatCardKey.Completed]: this.completed,
+    [StatCardKey.Pending]: this.pending,
+  };
+
+  readonly statCards: Signal<StatCardVM[]> = computed(() =>
+    DASHBOARD_STAT_CARDS.map(({ title, icon, key }) => ({
+      title,
+      icon,
+      value: this.valueMap[key],
+    })),
+  );
 }
