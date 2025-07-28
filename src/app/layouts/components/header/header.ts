@@ -4,9 +4,9 @@ import {
   inject,
   Signal,
 } from '@angular/core';
-import { AuthFacade } from '../../../service/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { User } from '../../../core/api/auth/auth.model';
+import { AuthFacade } from '../../../service/auth/auth.service';
 
 @Component({
   selector: 'app-header',

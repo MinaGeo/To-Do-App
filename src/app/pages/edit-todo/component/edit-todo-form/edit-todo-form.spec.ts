@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditTodoForm } from './edit-todo-form';
-import { TodoFacade } from '../../../../service/todo.service';
-import { ToastrService } from '../../../../service/toast.service';
+import { ToastrService } from '../../../../service/toast/toast.service';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { TodoFacade } from '../../../../service/todo/todo.service';
 
 describe('EditTodoForm', () => {
   let component: EditTodoForm;

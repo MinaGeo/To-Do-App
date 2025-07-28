@@ -12,8 +12,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthFacade } from '../../service/auth.service';
 import { LoginModel } from './models/login.model';
+import { AuthFacade } from '../../service/auth/auth.service';
 
 @Component({
   selector: 'app-login',

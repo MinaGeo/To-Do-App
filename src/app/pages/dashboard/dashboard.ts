@@ -6,11 +6,11 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { TodoFacade } from '../../service/todo.service';
 import { Todo } from '../../core/api/todo/todo.model';
 import { DashboardStats } from './components/dashboard-stats/dashboard-stats';
-import { AuthFacade } from '../../service/auth.service';
 import { DashboardTodoList } from './components/dashboard-todo-list/dashboard-todo-list';
+import { AuthFacade } from '../../service/auth/auth.service';
+import { TodoFacade } from '../../service/todo/todo.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,

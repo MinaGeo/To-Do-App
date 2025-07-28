@@ -6,7 +6,6 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TodoFacade } from '../../../../service/todo.service';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { DashboardStatCardComponent } from '../dashboard-stat-card-component/dashboard-stat-card-component';
 import {
@@ -15,6 +14,7 @@ import {
   StatCardVM,
 } from './model/dashboard-stats.model';
 import { DASHBOARD_STAT_CARDS } from './config/dashboard-stats.config';
+import { TodoFacade } from '../../../../service/todo/todo.service';
 @Component({
   selector: 'app-dashboard-stats',
   standalone: true,

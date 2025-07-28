@@ -4,23 +4,26 @@ import * as toastr from 'toastr';
 
 @Injectable({ providedIn: 'root' })
 export class ToastrService {
+  // Make toastr accessible for testing
+  public toastr: typeof toastr = toastr;
+
   constructor() {
-    toastr.options.positionClass = 'toast-bottom-right';
+    this.toastr.options.positionClass = 'toast-bottom-right';
   }
 
   success(message: string, title?: string): void {
-    toastr.success(message, title);
+    this.toastr.success(message, title);
   }
 
   error(message: string, title?: string): void {
-    toastr.error(message, title);
+    this.toastr.error(message, title);
   }
 
   info(message: string, title?: string): void {
-    toastr.info(message, title);
+    this.toastr.info(message, title);
   }
 
   warning(message: string, title?: string): void {
-    toastr.warning(message, title);
+    this.toastr.warning(message, title);
   }
 }

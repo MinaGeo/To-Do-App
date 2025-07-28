@@ -3,7 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { TodoCreate } from './create-todo';
-import { TodoFacade } from '../../service/todo.service';
+import { TodoFacade } from '../../service/todo/todo.service';
 
 describe('TodoCreate', () => {
   let component: TodoCreate;

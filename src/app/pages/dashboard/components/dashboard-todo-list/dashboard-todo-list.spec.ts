@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardTodoList } from './dashboard-todo-list';
-import { TodoFacade } from '../../../../service/todo.service';
-import { AuthFacade } from '../../../../service/auth.service';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { AuthFacade } from '../../../../service/auth/auth.service';
+import { TodoFacade } from '../../../../service/todo/todo.service';
 
 describe('DashboardTodoList', () => {
   let component: DashboardTodoList;

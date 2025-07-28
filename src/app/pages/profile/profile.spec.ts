@@ -4,8 +4,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { ProfilePage } from './profile';
-import { AuthFacade } from '../../service/auth.service';
 import { User, UserRole } from '../../core/api/auth/auth.model';
+import { AuthFacade } from '../../service/auth/auth.service';
 
 describe('ProfilePage', () => {
   let component: ProfilePage;

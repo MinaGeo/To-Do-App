@@ -1,11 +1,11 @@
 import { inject, Injectable, computed, Signal } from '@angular/core';
-import { AuthApiService } from '../core/api/auth/auth.service';
+import { AuthApiService } from '../../core/api/auth/auth.service';
 import {
   LoginRequest,
   RegisterRequest,
   AuthenticationResponse,
   User,
-} from '../core/api/auth/auth.model';
+} from '../../core/api/auth/auth.model';
 import {
   authData,
   authLoading,
@@ -13,8 +13,8 @@ import {
   setAuthLoading,
   setAuthError,
   setAuthData,
-} from '../core/state-management/auth.state';
-import { ToastrService } from './toast.service';
+} from '../../core/state-management/auth.state';
+import { ToastrService } from '../toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {

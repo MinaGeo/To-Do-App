@@ -3,9 +3,9 @@ import { DashboardStats } from './dashboard-stats';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { TodoFacade } from '../../../../service/todo.service';
 import { signal } from '@angular/core';
 import { Todo } from '../../../../core/api/todo/todo.model';
+import { TodoFacade } from '../../../../service/todo/todo.service';
 
 describe('DashboardStats', () => {
   let component: DashboardStats;

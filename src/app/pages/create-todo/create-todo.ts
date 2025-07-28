@@ -5,9 +5,9 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TodoFacade } from '../../service/todo.service';
 import { Router } from '@angular/router';
-import { ToastrService } from '../../service/toast.service';
+import { ToastrService } from '../../service/toast/toast.service';
+import { TodoFacade } from '../../service/todo/todo.service';
 
 @Component({
   selector: 'app-create-todo',

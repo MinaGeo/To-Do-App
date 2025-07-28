@@ -13,8 +13,8 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthFacade } from '../../service/auth.service';
 import { RegisterFormValue } from './models/register.model';
+import { AuthFacade } from '../../service/auth/auth.service';
 
 @Component({
   selector: 'app-register',

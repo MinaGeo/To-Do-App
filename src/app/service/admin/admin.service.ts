@@ -6,9 +6,9 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import { AdminApiService } from '../core/api/admin/admin.api';
-import { User } from '../core/api/auth/auth.model';
-import { ToastrService } from './toast.service';
+import { AdminApiService } from '../../core/api/admin/admin.api';
+import { User } from '../../core/api/auth/auth.model';
+import { ToastrService } from '../toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdminFacade {

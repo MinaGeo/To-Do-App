@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { AdminPage } from './admin';
-import { AdminFacade } from '../../service/admin.service';
+import { AdminFacade } from '../../service/admin/admin.service';
 
 describe('AdminPage', () => {
   let component: AdminPage;

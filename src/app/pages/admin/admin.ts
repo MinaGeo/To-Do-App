@@ -5,8 +5,8 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { AdminFacade } from '../../service/admin.service';
 import { AdminUserTable } from './component/admin-user-table/admin-user-table';
+import { AdminFacade } from '../../service/admin/admin.service';
 
 @Component({
   selector: 'app-admin',
