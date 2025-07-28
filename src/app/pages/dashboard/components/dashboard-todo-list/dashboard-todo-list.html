@@ -1,8 +1,13 @@
-<h4 class="text-white">📅 Today's Tasks</h4>
+<div
+  class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
+>
+  <h4 class="text-white mb-0">📅 Today's Tasks</h4>
+  <app-search-box [searchSignal]="search" placeholder="Search tasks..." />
+</div>
 
-@if (todoList().length > 0) {
+@if (filteredTodos().length > 0) {
   <ul class="list-group list-group-flush text-light">
-    @for (todo of todoList(); track todo.id) {
+    @for (todo of filteredTodos(); track todo.id) {
       <li
         class="list-group-item bg-transparent border-light d-flex justify-content-between align-items-center"
       >
