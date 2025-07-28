@@ -5,8 +5,8 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { Register } from './register';
-import { AuthFacade } from '../../service/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthFacade } from '../../service/auth/auth.service';
 
 describe('Register', () => {
   let component: Register;

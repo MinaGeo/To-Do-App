@@ -5,9 +5,9 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { Login } from './login';
-import { AuthFacade } from '../../service/auth.service';
 import { provideRouter } from '@angular/router';
 import { LoginRequest } from '../../core/api/auth/auth.model';
+import { AuthFacade } from '../../service/auth/auth.service';
 
 describe('Login', () => {
   let component: Login;

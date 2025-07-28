@@ -8,12 +8,12 @@ import {
   Signal,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TodoFacade } from '../../../../service/todo.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Todo } from '../../../../core/api/todo/todo.model';
-import { ToastrService } from '../../../../service/toast.service';
+import { ToastrService } from '../../../../service/toast/toast.service';
 import { EditTodoFormModel } from '../../model/edit-todo.form';
+import { TodoFacade } from '../../../../service/todo/todo.service';
 @Component({
   selector: 'app-edit-todo-form',
   imports: [CommonModule, FormsModule, RouterLink],

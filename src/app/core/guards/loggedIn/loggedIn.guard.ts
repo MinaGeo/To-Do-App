@@ -1,12 +1,14 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthFacade } from '../../service/auth.service';
-import { inject } from '@angular/core';
+import { inject, Signal } from '@angular/core';
+import { AuthFacade } from '../../../service/auth/auth.service';
 
 export const LoggedInGuard: CanActivateFn = () => {
   const authService: AuthFacade = inject(AuthFacade);
   const router: Router = inject(Router);
 
-  if (!authService.isAuthenticated()) {
+  const isLoggedInSignal: Signal<boolean> = authService.isAuthenticated();
+
+  if (!isLoggedInSignal()) {
     router.navigate(['/login']);
     return false;
   }

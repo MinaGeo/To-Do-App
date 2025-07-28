@@ -1,18 +1,18 @@
 import { Routes } from '@angular/router';
 import { Layout } from './layouts/layout/layout';
-import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/guards/auth/auth.guard';
 import { Landing } from './pages/landing/landing';
 import { Login } from './pages/login/login';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { Register } from './pages/register/register';
 import { TodoCreate } from './pages/create-todo/create-todo';
 import { EditTodoPage } from './pages/edit-todo/edit-todo';
-import { RedirectGuard } from './core/guards/redirect.guard';
 import { ProfilePage } from './pages/profile/profile';
-import { LoggedInGuard } from './core/guards/loggedIn.guard';
+import { LoggedInGuard } from './core/guards/loggedIn/loggedIn.guard';
 import { AdminPage } from './pages/admin/admin';
-import { roleGuard } from './core/guards/role.guard';
 import { UnauthorizedPage } from './shared/unauthorized-page/unauthorized-page';
+import { RedirectGuard } from './core/guards/redirect/redirect.guard';
+import { roleGuard } from './core/guards/role/role.guard';
 export const routes: Routes = [
   {
     path: '',

@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthFacade } from '../../service/auth.service';
+import { AuthFacade } from '../../../service/auth/auth.service';
 
-export const RedirectGuard: CanActivateFn = () => {
+export const AuthGuard: CanActivateFn = () => {
   const authService: AuthFacade = inject(AuthFacade);
   const router: Router = inject(Router);
 
-  if (authService.isAuthenticated()()) {
-    router.navigate(['/dashboard']);
+  if (!authService.isAuthenticated()()) {
+    router.navigate(['/']);
     return false;
   }
 

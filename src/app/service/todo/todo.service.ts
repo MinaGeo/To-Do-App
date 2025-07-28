@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
-import { TodoService } from '../core/api/todo/todo.service';
+import { TodoService } from '../../core/api/todo/todo.service';
 import {
   todos,
   setTodos,
@@ -12,9 +12,9 @@ import {
   completedTodos,
   pendingTodos,
   createOptimisticTodo,
-} from '../core/state-management/todo.state';
-import { Todo } from '../core/api/todo/todo.model';
-import { ToastrService } from './toast.service';
+} from '../../core/state-management/todo.state';
+import { Todo } from '../../core/api/todo/todo.model';
+import { ToastrService } from '../toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class TodoFacade {

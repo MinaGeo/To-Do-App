@@ -5,8 +5,8 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { signal, Signal } from '@angular/core';
 import { Header } from './header';
-import { AuthFacade } from '../../../service/auth.service';
 import { User, UserRole } from '../../../core/api/auth/auth.model';
+import { AuthFacade } from '../../../service/auth/auth.service';
 
 describe('Header', () => {
   let component: Header;

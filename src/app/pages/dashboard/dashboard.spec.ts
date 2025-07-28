@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { Dashboard } from './dashboard';
-import { TodoFacade } from '../../service/todo.service';
-import { AuthFacade } from '../../service/auth.service';
 
 import { Todo } from '../../core/api/todo/todo.model';
 import { signal } from '@angular/core';
+import { AuthFacade } from '../../service/auth/auth.service';
+import { TodoFacade } from '../../service/todo/todo.service';
 
 describe('Dashboard', () => {
   let component: Dashboard;
