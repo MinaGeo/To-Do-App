@@ -1,0 +1,7 @@
+.search-input {
+  width: 200px;
+}
+.search-input::placeholder {
+  color: var(--color-sasogold);
+  opacity: 1;
+}
