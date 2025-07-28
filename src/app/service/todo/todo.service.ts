@@ -14,7 +14,7 @@ import {
   createOptimisticTodo,
 } from '../../core/state-management/todo.state';
 import { Todo } from '../../core/api/todo/todo.model';
-import { ToastrService } from '../toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({ providedIn: 'root' })
 export class TodoFacade {

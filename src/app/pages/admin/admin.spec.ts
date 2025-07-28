@@ -5,12 +5,20 @@ import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { AdminPage } from './admin';
 import { AdminFacade } from '../../service/admin/admin.service';
+import { DefaultGlobalConfig, TOAST_CONFIG, ToastrService } from 'ngx-toastr';
 
 describe('AdminPage', () => {
   let component: AdminPage;
   let fixture: ComponentFixture<AdminPage>;
   let mockAdminFacade: jasmine.SpyObj<AdminFacade>;
+  let mockToastrService: jasmine.SpyObj<ToastrService>;
 
+  mockToastrService = jasmine.createSpyObj('ToastrService', [
+    'success',
+    'error',
+    'info',
+    'warning',
+  ]);
   beforeEach(async () => {
     const adminFacadeSpy = jasmine.createSpyObj('AdminFacade', [
       'loadUsers',
@@ -21,6 +29,8 @@ describe('AdminPage', () => {
     await TestBed.configureTestingModule({
       imports: [AdminPage],
       providers: [
+        { provide: ToastrService, useValue: mockToastrService },
+        { provide: TOAST_CONFIG, useValue: DefaultGlobalConfig },
         provideZonelessChangeDetection(),
         provideRouter([]),
         provideHttpClient(),

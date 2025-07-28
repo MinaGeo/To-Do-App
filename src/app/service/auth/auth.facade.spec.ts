@@ -9,7 +9,7 @@ import {
 import { of, throwError } from 'rxjs';
 import { AuthFacade } from './auth.service';
 import { AuthApiService } from '../../core/api/auth/auth.service';
-import { ToastrService } from '../toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 
 describe('AuthFacade', () => {
   let service: AuthFacade;

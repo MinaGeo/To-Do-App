@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AdminFacade } from './admin.service';
 import { AdminApiService } from '../../core/api/admin/admin.api';
-import { ToastrService } from '../toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 import { User, UserRole } from '../../core/api/auth/auth.model';
 import { provideZonelessChangeDetection } from '@angular/core';
 

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { TodoService } from '../../core/api/todo/todo.service';
-import { ToastrService } from '../toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 import { Todo } from '../../core/api/todo/todo.model';
 import { TodoFacade } from './todo.service';
 import { provideZonelessChangeDetection } from '@angular/core';

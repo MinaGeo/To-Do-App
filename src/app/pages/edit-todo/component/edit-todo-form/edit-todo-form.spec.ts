@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EditTodoForm } from './edit-todo-form';
-import { ToastrService } from '../../../../service/toast/toast.service';
+import { ToastrService, TOAST_CONFIG, DefaultGlobalConfig } from 'ngx-toastr';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
@@ -70,6 +70,7 @@ describe('EditTodoForm', () => {
         ]),
         { provide: TodoFacade, useValue: mockTodoFacade },
         { provide: ToastrService, useValue: mockToastrService },
+        { provide: TOAST_CONFIG, useValue: DefaultGlobalConfig }, // ✅ fix missing provider
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         provideZonelessChangeDetection(),

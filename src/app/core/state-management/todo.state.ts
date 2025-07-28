@@ -31,9 +31,7 @@ export const pendingTodos: Signal<number> = computed(
 
 export function updateTodoInState(id: string, data: Partial<Todo>): void {
   _todos.update((list: Todo[]) =>
-    list.map((t: Todo) =>
-      t.id === id ? { ...t, ...data, updatedAt: new Date().toISOString() } : t,
-    ),
+    list.map((t: Todo) => (t.id === id ? { ...t, ...data } : t)),
   );
 }
 
@@ -44,14 +42,13 @@ export function deleteTodoInState(id: string): void {
 export function addTodoLocally(todo: Todo): void {
   _todos.update((list: Todo[]) => [...list, todo]);
 }
-
 export function createOptimisticTodo(name: string, description: string): Todo {
   return {
     id: crypto.randomUUID(),
     name,
     description,
     completed: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: '',
+    updatedAt: '',
   };
 }

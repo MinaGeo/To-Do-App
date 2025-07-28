@@ -3,7 +3,8 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { AdminUserTable } from './admin-user-table';
-import { ToastrService } from '../../../../service/toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
+
 import { User, UserRole } from '../../../../core/api/auth/auth.model';
 import { AdminFacade } from '../../../../service/admin/admin.service';
 

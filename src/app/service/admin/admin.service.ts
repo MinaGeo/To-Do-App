@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { AdminApiService } from '../../core/api/admin/admin.api';
 import { User } from '../../core/api/auth/auth.model';
-import { ToastrService } from '../toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({ providedIn: 'root' })
 export class AdminFacade {

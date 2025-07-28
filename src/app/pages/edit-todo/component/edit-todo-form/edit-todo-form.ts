@@ -11,7 +11,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Todo } from '../../../../core/api/todo/todo.model';
-import { ToastrService } from '../../../../service/toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
+
 import { EditTodoFormModel } from '../../model/edit-todo.form';
 import { TodoFacade } from '../../../../service/todo/todo.service';
 @Component({
