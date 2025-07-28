@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { TodoCreate } from './create-todo';
 import { TodoFacade } from '../../service/todo/todo.service';
+import { DefaultGlobalConfig, TOAST_CONFIG, ToastrService } from 'ngx-toastr';
 
 describe('TodoCreate', () => {
   let component: TodoCreate;
@@ -15,12 +16,22 @@ describe('TodoCreate', () => {
     mockTodoFacade = jasmine.createSpyObj('TodoFacade', ['addTodo']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    let mockToastrService: jasmine.SpyObj<ToastrService>;
+
+    mockToastrService = jasmine.createSpyObj('ToastrService', [
+      'success',
+      'error',
+      'info',
+      'warning',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [TodoCreate],
       providers: [
         provideRouter([{ path: 'dashboard', component: {} as any }]),
         { provide: TodoFacade, useValue: mockTodoFacade },
+        { provide: ToastrService, useValue: mockToastrService },
+        { provide: TOAST_CONFIG, useValue: DefaultGlobalConfig }, // ✅ fix missing provider
         { provide: Router, useValue: mockRouter },
         provideZonelessChangeDetection(),
       ],

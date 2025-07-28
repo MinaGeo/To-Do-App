@@ -11,8 +11,8 @@ import {
 import { Todo } from '../../../../core/api/todo/todo.model';
 import { RouterLink } from '@angular/router';
 import { Search } from '../../../../shared/search/search';
-import { TodoFacade } from '../../../../service/todo.service';
-import { AuthFacade } from '../../../../service/auth.service';
+import { TodoFacade } from '../../../../service/todo/todo.service';
+import { AuthFacade } from '../../../../service/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard-todo-list',

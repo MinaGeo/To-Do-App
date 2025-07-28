@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastrService } from '../../service/toast/toast.service';
+import { ToastrService } from 'ngx-toastr';
 import { TodoFacade } from '../../service/todo/todo.service';
 
 @Component({

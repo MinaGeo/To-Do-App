@@ -10,7 +10,7 @@ import { EditTodoPage } from './pages/edit-todo/edit-todo';
 import { ProfilePage } from './pages/profile/profile';
 import { LoggedInGuard } from './core/guards/loggedIn/loggedIn.guard';
 import { AdminPage } from './pages/admin/admin';
-import { UnauthorizedPage } from './shared/unauthorized-page/unauthorized-page';
+import { UnauthorizedPage } from './pages/unauthorized-page/unauthorized-page';
 import { RedirectGuard } from './core/guards/redirect/redirect.guard';
 import { roleGuard } from './core/guards/role/role.guard';
 export const routes: Routes = [
@@ -85,7 +85,7 @@ export const routes: Routes = [
       {
         path: 'unauthorized',
         loadComponent: () =>
-          import('./shared/unauthorized-page/unauthorized-page').then(
+          import('./pages/unauthorized-page/unauthorized-page').then(
             (m: { UnauthorizedPage: typeof UnauthorizedPage }) =>
               m.UnauthorizedPage,
           ),

@@ -11,8 +11,9 @@ import {
 } from '@angular/core';
 import { User } from '../../../../core/api/auth/auth.model';
 import { Search } from '../../../../shared/search/search';
-import { AdminFacade } from '../../../../service/admin.service';
-import { ToastrService } from '../../../../service/toast.service';
+import { AdminFacade } from '../../../../service/admin/admin.service';
+import { ToastrService } from 'ngx-toastr';
+
 @Component({
   selector: 'app-admin-user-table',
   standalone: true,
